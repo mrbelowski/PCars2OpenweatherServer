@@ -7,13 +7,13 @@ import org.belowski.weather.model.Sun;
 
 public class City {
 
-    private String id = "1234567";
+    private String id = "0";
     
-    private String name = "Unknown";
+    private String name = "";
     
     private Coord coord;
     
-    private String country = "NA";
+    private String country = "";
     
     private Sun sun;
     

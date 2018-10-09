@@ -1,6 +1,6 @@
 package org.belowski.weather.model.setup;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /**
  * Used to set weather
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  */
 public class Conditions {
 
-    private LocalDateTime time;
+    private ZonedDateTime time;
     
     private float temperature;
     
@@ -32,7 +32,7 @@ public class Conditions {
         super();
     }
 
-    public Conditions(LocalDateTime time, float temperature, float precipitation, float pressure, int humidity,
+    public Conditions(ZonedDateTime time, float temperature, float precipitation, float pressure, int humidity,
             int clouds, float windSpeed, int windDirection, int visibility) {
         super();
         this.time = time;
@@ -46,11 +46,11 @@ public class Conditions {
         this.visibility = visibility;
     }
 
-    public LocalDateTime getTime() {
+    public ZonedDateTime getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(ZonedDateTime time) {
         this.time = time;
     }
 
@@ -118,7 +118,7 @@ public class Conditions {
         this.visibility = visibility;
     }
 
-    public Conditions cloneForTime(LocalDateTime start) {
+    public Conditions cloneForTime(ZonedDateTime start) {
         return new Conditions(start, this.temperature, this.precipitation, this.pressure, this.humidity, this.clouds, this.windSpeed, this.windDirection, this.visibility);
     }
 

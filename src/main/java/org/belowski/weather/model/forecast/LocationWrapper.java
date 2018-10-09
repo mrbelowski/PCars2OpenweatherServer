@@ -2,6 +2,7 @@ package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlElement;
 
+
 public class LocationWrapper {
 
     private String name = "NA";

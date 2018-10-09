@@ -1,6 +1,6 @@
 package org.belowski.weather.repository;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.belowski.weather.model.current.Current;
@@ -18,7 +18,7 @@ public interface WeatherRepository {
      * @param time
      * @return
      */
-    WeatherData getForecast(float latitude, float longitude, int items, LocalDateTime time);
+    WeatherData getForecast(float latitude, float longitude, int items, ZonedDateTime time);
     
     /**
      * Creates and returns a sample.
@@ -28,7 +28,7 @@ public interface WeatherRepository {
      * @param time
      * @return
      */
-    Current getWeather(float latitude, float longitude, LocalDateTime time);
+    Current getWeather(float latitude, float longitude, ZonedDateTime time);
     
     /**
      * 

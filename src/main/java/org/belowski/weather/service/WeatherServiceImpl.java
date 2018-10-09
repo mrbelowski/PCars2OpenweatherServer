@@ -1,6 +1,6 @@
 package org.belowski.weather.service;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -20,12 +20,12 @@ public class WeatherServiceImpl implements WeatherService {
     public static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
-    public Current getWeather(float latitude, float longitude, LocalDateTime time) {
+    public Current getWeather(float latitude, float longitude, ZonedDateTime time) {
         return weatherRepository.getWeather(latitude, longitude, time);
     }
 
     @Override
-    public WeatherData getForecast(float latitude, float longitude, int items, LocalDateTime time) {
+    public WeatherData getForecast(float latitude, float longitude, int items, ZonedDateTime time) {
         return weatherRepository.getForecast(latitude, longitude, items, time);
     }
 

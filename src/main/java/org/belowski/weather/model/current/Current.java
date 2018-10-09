@@ -1,6 +1,7 @@
 package org.belowski.weather.model.current;
 
-import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,16 +27,17 @@ public class Current {
     private Humidity humidity;
 
     private Clouds clouds;
-    
-    private Visibility visibility;
-    
+        
     private LastUpdate lastUpdate;
+    
+    private Weather weather;
 
     public Current() {
         super();
     }
 
-    public Current(City city, Precipitation precipitation, Wind wind, Temperature temperature, Pressure pressure, Humidity humidity, Clouds clouds, Visibility visibility) {
+    public Current(City city, Precipitation precipitation, Wind wind, Temperature temperature, Pressure pressure, 
+            Humidity humidity, Clouds clouds, Weather weather) {
         super();
         this.city = city;
         this.precipitation = precipitation;
@@ -44,9 +46,9 @@ public class Current {
         this.pressure = pressure;
         this.humidity = humidity;
         this.clouds = clouds;
-        this.visibility = visibility;
         this.lastUpdate = new LastUpdate();
-        this.lastUpdate.setValue(LocalDateTime.now().format(WeatherServiceImpl.DTF));
+        this.lastUpdate.setValue(ZonedDateTime.now(ZoneOffset.UTC).format(WeatherServiceImpl.DTF));
+        this.weather = weather;
     }
     
     @XmlElement(name = "city")
@@ -111,15 +113,6 @@ public class Current {
     public void setClouds(Clouds clouds) {
         this.clouds = clouds;
     }
-
-    @XmlElement(name = "visiblity")
-    public Visibility getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(Visibility visibility) {
-        this.visibility = visibility;
-    }
     
     @XmlElement(name = "lastupdate")
     public LastUpdate getLastUpdate() {
@@ -129,11 +122,20 @@ public class Current {
     public void setLastUpdate(LastUpdate lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
+    
+    @XmlElement(name = "weather")
+    public Weather getWeather() {
+        return weather;
+    }
+
+    public void setWeather(Weather weather) {
+        this.weather = weather;
+    }
 
     @Override
     public String toString() {
         return "Current [precipitation=" + precipitation + ", wind=" + wind
                 + ", temperature=" + temperature + ", pressure=" + pressure + ", humidity=" + humidity + ", clouds="
-                + clouds + ", visibility=" + visibility + "]";
+                + clouds + "]";
     }
 }
