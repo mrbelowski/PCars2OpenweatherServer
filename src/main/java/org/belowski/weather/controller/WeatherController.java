@@ -21,9 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/*import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;*/
-
 @Controller
 public class WeatherController {
         
@@ -41,9 +38,6 @@ public class WeatherController {
 
     @Value("${proxy.appId}")
     private String proxyAppId;
-
-    
-    //rivate XmlMapper xmlMapper = new XmlMapper();
     
     @RequestMapping(path = "/data/2.5/weather", produces = MediaType.APPLICATION_XML_VALUE, consumes = "*/*")
     public @ResponseBody Current getWeather(

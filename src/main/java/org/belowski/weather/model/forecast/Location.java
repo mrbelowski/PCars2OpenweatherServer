@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 public class Location {
 
-    private int altitude = 0;
+    private float altitude = 0;
     
     private float latitude;
     
@@ -21,11 +21,11 @@ public class Location {
     }
 
     @XmlAttribute(name = "altitude")
-    public int getAltitude() {
+    public float getAltitude() {
         return altitude;
     }
 
-    public void setAltitude(int altitude) {
+    public void setAltitude(float altitude) {
         this.altitude = altitude;
     }
 

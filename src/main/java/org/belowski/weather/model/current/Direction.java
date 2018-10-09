@@ -4,13 +4,13 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 public class Direction {
 
-    private int value;
+    private float value;
     
     private String code;
     
     private String name;
 
-    public Direction(int value) {
+    public Direction(float value) {
         super();
         this.value = value;
         // set name and code
@@ -23,11 +23,11 @@ public class Direction {
     }
 
     @XmlAttribute
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(float value) {
         this.value = value;
     }
 
