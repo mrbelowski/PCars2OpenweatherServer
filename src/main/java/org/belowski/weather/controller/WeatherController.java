@@ -9,6 +9,7 @@ import org.belowski.weather.model.current.Current;
 import org.belowski.weather.model.forecast.WeatherData;
 import org.belowski.weather.model.setup.CreateConditions;
 import org.belowski.weather.service.WeatherService;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -23,6 +24,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 public class WeatherController {
+    
+    private static final Logger LOGGER = Logger.getLogger(WeatherController.class.getName());
         
     @Autowired
     private WeatherService weatherService;
@@ -50,7 +53,9 @@ public class WeatherController {
                     .queryParam("lon", longitude)
                     .queryParam("mode", "xml")
                     .queryParam("APPID", proxyAppId);
-            return proxyTemplate.getForEntity(builder.toUriString(), Current.class).getBody();
+            Current current = proxyTemplate.getForEntity(builder.toUriString(), Current.class).getBody();
+            LOGGER.info("got current conditions from weather server: " + current.toString());
+            return current;
         }
         else {
         return weatherService.getWeather(longitude, latitude, 
@@ -78,7 +83,9 @@ public class WeatherController {
                     .queryParam("mode", "xml")
                     .queryParam("cnt", 8)
                     .queryParam("APPID", proxyAppId);
-            return proxyTemplate.getForEntity(builder.toUriString(), WeatherData.class).getBody();
+            WeatherData weatherData = proxyTemplate.getForEntity(builder.toUriString(), WeatherData.class).getBody();
+            LOGGER.info("Got forecast: " + weatherData);
+            return weatherData;
         } else {
             return weatherService.getForecast(longitude, latitude, 8,
                     time.isPresent()
