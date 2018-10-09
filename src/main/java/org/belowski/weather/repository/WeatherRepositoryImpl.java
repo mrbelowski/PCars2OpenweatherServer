@@ -52,8 +52,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private float minTemp = 283f;
     private float maxTemp = 293f;
     private float maxRain = 1;
-    private float minWindSpeed = 0f;
-    private float maxWindSpeed = 20f;
+    private float minWindSpeed = 20f;
+    private float maxWindSpeed = 40f;
     private float minPressure = 980f;
     private float maxPressure = 1020f;
     private int minTimeBeforeChangingWeatherDirection = 10 * 60;    // don't change from improving to worsening before 10 minutes
@@ -205,7 +205,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             // need to guess some start conditions
             // link rain and humidity here
             //float rain = random.nextFloat() * maxRain;
-            float rain = 1;
+            float rain = 0.1f;
             return new Conditions(time, 
                     minTemp + (random.nextFloat() * (maxTemp - minTemp)),
                     rain,

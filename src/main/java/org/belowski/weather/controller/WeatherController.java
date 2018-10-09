@@ -61,7 +61,7 @@ public class WeatherController {
             return new ResponseEntity<Current>(current, createHeaders("/data/2.5/weather", proxyAppId, latitude, longitude), HttpStatus.OK);
         }
         else {
-        return new ResponseEntity<Current> (weatherService.getWeather(longitude, latitude, 
+        return new ResponseEntity<Current> (weatherService.getWeather(latitude, longitude, 
                 time.isPresent() ? ZonedDateTime.ofInstant(Instant.ofEpochMilli(time.get()), ZoneOffset.UTC) : ZonedDateTime.now(ZoneOffset.UTC)),
                         createHeaders("/data/2.5/weather", proxyAppId, latitude, longitude), HttpStatus.OK);
         }
@@ -72,7 +72,7 @@ public class WeatherController {
             @RequestParam(name = "lat") float latitude,
             @RequestParam(name = "lon") float longitude,
             @RequestBody CreateConditions createConditions) {
-        weatherService.createWeather(longitude, latitude, createConditions.getMinutesBetweenSamples(), createConditions.getConditions());
+        weatherService.createWeather(latitude, longitude, createConditions.getMinutesBetweenSamples(), createConditions.getConditions());
     }
     
     @RequestMapping(path = "/data/2.5/forecast", produces = "application/xml; charset=utf-8", consumes = "*/*")
@@ -92,7 +92,7 @@ public class WeatherController {
             return new ResponseEntity<WeatherData>(weatherData, createHeaders("/data/2.5/forecast", proxyAppId, latitude, longitude), HttpStatus.OK);
         } else {
             return new ResponseEntity<WeatherData>(                    
-                    weatherService.getForecast(longitude, latitude, 8,
+                    weatherService.getForecast(latitude, longitude, 8,
                     time.isPresent()
                             ? ZonedDateTime.ofInstant(Instant.ofEpochMilli(time.get()), ZoneOffset.UTC)
                             : ZonedDateTime.now(ZoneOffset.UTC)),
