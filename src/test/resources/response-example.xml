@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<time from="2018-10-07T12:00:00" to="2018-10-07T15:00:00">
+	<symbol number="500" name="light rain" var="10d" />
+	<precipitation unit="3h" value="0.615" type="rain" />
+	<windDirection deg="80.5023" code="E" name="East" />
+	<windSpeed mps="4.21" name="Gentle Breeze" />
+	<temperature unit="kelvin" value="310.67" min="307.615"
+		max="310.67" />
+	<pressure unit="hPa" value="966.38" />
+	<humidity value="42" unit="%" />
+	<clouds value="few clouds" all="12" unit="%" />
+</time>

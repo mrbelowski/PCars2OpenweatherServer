@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<current>
+	<city id="3066879" name="Ricany">
+		<coord lon="16.45" lat="49.2"></coord>
+		<country>CZ</country>
+		<sun rise="2018-10-07T05:03:44" set="2018-10-07T16:19:03"></sun>
+	</city>
+	<temperature value="288.15" min="288.15" max="288.15" unit="kelvin"></temperature>
+	<humidity value="72" unit="%"></humidity>
+	<pressure value="1018" unit="hPa"></pressure>
+	<wind>
+		<speed value="4.1" name="Gentle Breeze"></speed>
+		<gusts></gusts>
+		<direction value="320" code="NW" name="Northwest"></direction>
+	</wind>
+	<clouds value="75" name="broken clouds"></clouds>
+	<visibility value="10000"></visibility>
+	<precipitation mode="no"></precipitation>
+	<weather number="803" value="broken clouds" icon="04n"></weather>
+	<lastupdate value="2018-10-07T19:40:00"></lastupdate>
+</current>

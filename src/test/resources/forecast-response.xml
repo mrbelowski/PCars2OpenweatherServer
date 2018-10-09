@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weatherdata>
+	<location>
+		<name>Ricany</name>
+		<type></type>
+		<country>CZ</country>
+		<timezone></timezone>
+		<location altitude="0" latitude="49.215" longitude="16.3936"
+			geobase="geonames" geobaseid="3066879"></location>
+	</location>
+	<credit></credit>
+	<meta>
+		<lastupdate></lastupdate>
+		<calctime>0.0071</calctime>
+		<nextupdate></nextupdate>
+	</meta>
+	<sun rise="2018-10-07T05:03:58" set="2018-10-07T16:19:16"></sun>
+	<forecast>
+		<time from="2018-10-07T18:00:00" to="2018-10-07T21:00:00">
+			<symbol number="801" name="few clouds" var="02n"></symbol>
+			<precipitation></precipitation>
+			<windDirection deg="2.50351" code="N" name="North"></windDirection>
+			<windSpeed mps="4.27" name="Gentle Breeze"></windSpeed>
+			<temperature unit="kelvin" value="286.42" min="286.42"
+				max="286.659"></temperature>
+			<pressure unit="hPa" value="982.05"></pressure>
+			<humidity value="88" unit="%"></humidity>
+			<clouds value="few clouds" all="20" unit="%"></clouds>
+		</time>
+		<time from="2018-10-07T21:00:00" to="2018-10-08T00:00:00">
+			<symbol number="801" name="few clouds" var="02n"></symbol>
+			<precipitation></precipitation>
+			<windDirection deg="13.0005" code="NNE" name="North-northeast"></windDirection>
+			<windSpeed mps="3" name="Light breeze"></windSpeed>
+			<temperature unit="kelvin" value="284.29" min="284.29"
+				max="284.466"></temperature>
+			<pressure unit="hPa" value="983.38"></pressure>
+			<humidity value="86" unit="%"></humidity>
+			<clouds value="few clouds" all="24" unit="%"></clouds>
+		</time>
+		<time from="2018-10-08T00:00:00" to="2018-10-08T03:00:00">
+			<symbol number="500" name="light rain" var="10n"></symbol>
+			<precipitation unit="3h" value="0.035" type="rain"></precipitation>
+			<windDirection deg="1.00275" code="N" name="North"></windDirection>
+			<windSpeed mps="2.2" name="Light breeze"></windSpeed>
+			<temperature unit="kelvin" value="284.09" min="284.09"
+				max="284.213"></temperature>
+			<pressure unit="hPa" value="984.21"></pressure>
+			<humidity value="80" unit="%"></humidity>
+			<clouds value="overcast clouds" all="92" unit="%"></clouds>
+		</time>
+		<time from="2018-10-08T03:00:00" to="2018-10-08T06:00:00">
+			<symbol number="500" name="light rain" var="10d"></symbol>
+			<precipitation unit="3h" value="0.15" type="rain"></precipitation>
+			<windDirection deg="359.505" code="" name=""></windDirection>
+			<windSpeed mps="1.81" name="Light breeze"></windSpeed>
+			<temperature unit="kelvin" value="283.89" min="283.89"
+				max="283.954"></temperature>
+			<pressure unit="hPa" value="985.33"></pressure>
+			<humidity value="82" unit="%"></humidity>
+			<clouds value="scattered clouds" all="48" unit="%"></clouds>
+		</time>
+		<time from="2018-10-08T06:00:00" to="2018-10-08T09:00:00">
+			<symbol number="500" name="light rain" var="10d"></symbol>
+			<precipitation unit="3h" value="0.01" type="rain"></precipitation>
+			<windDirection deg="5.50085" code="N" name="North"></windDirection>
+			<windSpeed mps="1.92" name="Light breeze"></windSpeed>
+			<temperature unit="kelvin" value="286.615" min="286.615"
+				max="286.615"></temperature>
+			<pressure unit="hPa" value="986.35"></pressure>
+			<humidity value="80" unit="%"></humidity>
+			<clouds value="scattered clouds" all="36" unit="%"></clouds>
+		</time>
+		<time from="2018-10-08T09:00:00" to="2018-10-08T12:00:00">
+			<symbol number="800" name="clear sky" var="01d"></symbol>
+			<precipitation></precipitation>
+			<windDirection deg="25.0003" code="NNE" name="North-northeast"></windDirection>
+			<windSpeed mps="2.02" name="Light breeze"></windSpeed>
+			<temperature unit="kelvin" value="289.953" min="289.953"
+				max="289.953"></temperature>
+			<pressure unit="hPa" value="985.89"></pressure>
+			<humidity value="80" unit="%"></humidity>
+			<clouds value="clear sky" all="0" unit="%"></clouds>
+		</time>
+		<time from="2018-10-08T12:00:00" to="2018-10-08T15:00:00">
+			<symbol number="800" name="clear sky" var="01d"></symbol>
+			<precipitation></precipitation>
+			<windDirection deg="47.0064" code="NE" name="NorthEast"></windDirection>
+			<windSpeed mps="2.07" name="Light breeze"></windSpeed>
+			<temperature unit="kelvin" value="290.08" min="290.08"
+				max="290.08"></temperature>
+			<pressure unit="hPa" value="985.41"></pressure>
+			<humidity value="71" unit="%"></humidity>
+			<clouds value="clear sky" all="0" unit="%"></clouds>
+		</time>
+		<time from="2018-10-08T15:00:00" to="2018-10-08T18:00:00">
+			<symbol number="800" name="clear sky" var="01n"></symbol>
+			<precipitation></precipitation>
+			<windDirection deg="65.003" code="ENE" name="East-northeast"></windDirection>
+			<windSpeed mps="2.26" name="Light breeze"></windSpeed>
+			<temperature unit="kelvin" value="284.701" min="284.701"
+				max="284.701"></temperature>
+			<pressure unit="hPa" value="986.02"></pressure>
+			<humidity value="85" unit="%"></humidity>
+			<clouds value="clear sky" all="0" unit="%"></clouds>
+		</time>
+	</forecast>
+</weatherdata>
