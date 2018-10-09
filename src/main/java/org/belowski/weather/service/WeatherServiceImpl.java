@@ -12,23 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WeatherServiceImpl implements WeatherService {    
-    
+public class WeatherServiceImpl implements WeatherService {
+
     @Autowired
     private WeatherRepository weatherRepository;
-    
+
     public static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        
+
     @Override
     public Current getWeather(float latitude, float longitude, LocalDateTime time) {
         return weatherRepository.getWeather(latitude, longitude, time);
     }
-    
+
     @Override
     public WeatherData getForecast(float latitude, float longitude, int items, LocalDateTime time) {
         return weatherRepository.getForecast(latitude, longitude, items, time);
     }
-    
+
     @Override
     public void createWeather(float latitude, float longitude, int minutesBetweenSamples, List<Conditions> conditions) {
         weatherRepository.createWeather(latitude, longitude, minutesBetweenSamples, conditions);
