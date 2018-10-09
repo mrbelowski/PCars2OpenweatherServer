@@ -20,7 +20,6 @@ public class City {
     public City(Coord coord, Sun sun) {
         super();
         this.coord = coord;
-        this.country = country;
         this.sun = sun;
     }
 
