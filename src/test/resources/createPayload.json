@@ -1,7 +1,7 @@
 {
 	"minutesBetweenSamples": 10,
 	"conditions": [{
-		"temperature": 0,
+		"temperature": 273,
 		"precipitation": 0.5,
 		"pressure": 2000,
 		"humidity": 50,
@@ -10,7 +10,7 @@
 		"windDirection": 100,
 		"visibility": 10000
 	}, {
-		"temperature": 1,
+		"temperature": 274,
 		"precipitation": 0.8,
 		"pressure": 3000,
 		"humidity": 50,
@@ -19,7 +19,7 @@
 		"windDirection": 100,
 		"visibility": 10000
 	}, {
-		"temperature": 2,
+		"temperature": 275,
 		"precipitation": 1,
 		"pressure": 4000,
 		"humidity": 100,
@@ -28,7 +28,7 @@
 		"windDirection": 100,
 		"visibility": 5000
 	}, {
-		"temperature": 3,
+		"temperature": 276,
 		"precipitation": 0.5,
 		"pressure": 5000,
 		"humidity": 50,
@@ -37,7 +37,7 @@
 		"windDirection": 100,
 		"visibility": 2000
 	}, {
-		"temperature": 4,
+		"temperature": 277,
 		"precipitation": 0.5,
 		"pressure": 6000,
 		"humidity": 50,

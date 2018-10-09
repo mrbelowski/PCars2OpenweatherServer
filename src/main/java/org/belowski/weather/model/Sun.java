@@ -1,4 +1,4 @@
-package org.belowski.weather.model.forecast;
+package org.belowski.weather.model;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -35,6 +35,9 @@ public class Sun {
     public void setSet(String set) {
         this.set = set;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Sun [rise=" + rise + ", set=" + set + "]";
+    }
 }

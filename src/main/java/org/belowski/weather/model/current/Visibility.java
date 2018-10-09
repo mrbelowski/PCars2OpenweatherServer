@@ -8,7 +8,12 @@ public class Visibility {
 
     public Visibility(int value) {
         super();
-        this.value = value;
+        if (value == 0) {
+            this.value = 2000;
+        }
+        else {
+          this.value = value;
+        }
     }
 
     public Visibility() {
@@ -22,5 +27,12 @@ public class Visibility {
 
     public void setValue(int value) {
         this.value = value;
-    };
+    }
+
+    @Override
+    public String toString() {
+        return "Visibility [value=" + value + "]";
+    }
+    
+    
 }

@@ -49,4 +49,9 @@ public class Precipitation {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "Precipitation [unit=" + unit + ", value=" + value + ", type=" + type + "]";
+    }
+
 }

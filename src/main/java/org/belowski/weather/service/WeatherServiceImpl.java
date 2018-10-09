@@ -17,7 +17,7 @@ public class WeatherServiceImpl implements WeatherService {
     @Autowired
     private WeatherRepository weatherRepository;
     
-    public static final DateTimeFormatter DTF = DateTimeFormatter.ISO_DATE_TIME;  
+    public static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         
     @Override
     public Current getWeather(float latitude, float longitude, LocalDateTime time) {
@@ -25,8 +25,8 @@ public class WeatherServiceImpl implements WeatherService {
     }
     
     @Override
-    public WeatherData getForecast(float latitude, float longitude, LocalDateTime time) {
-        return weatherRepository.getForecast(latitude, longitude, time);
+    public WeatherData getForecast(float latitude, float longitude, int items, LocalDateTime time) {
+        return weatherRepository.getForecast(latitude, longitude, items, time);
     }
     
     @Override

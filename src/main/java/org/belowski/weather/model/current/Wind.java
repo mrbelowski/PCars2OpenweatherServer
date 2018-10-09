@@ -35,6 +35,11 @@ public class Wind {
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
+
+    @Override
+    public String toString() {
+        return "Wind [speed=" + speed + ", direction=" + direction + "]";
+    }
     
     
 }

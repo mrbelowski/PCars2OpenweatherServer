@@ -14,6 +14,8 @@ public class Direction {
         super();
         this.value = value;
         // set name and code
+        this.name = "East";
+        this.code = "E";
     }
 
     public Direction() {
@@ -38,6 +40,7 @@ public class Direction {
         this.code = code;
     }
 
+    @XmlAttribute
     public String getName() {
         return name;
     }
@@ -45,4 +48,10 @@ public class Direction {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Direction [value=" + value + ", code=" + code + ", name=" + name + "]";
+    }
+    
 }

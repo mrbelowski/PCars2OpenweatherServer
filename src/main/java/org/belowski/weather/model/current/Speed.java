@@ -16,6 +16,7 @@ public class Speed {
         super();
         this.value = value;
         // set the name from the speed
+        this.name = "gentle breeze";
     }
 
     @XmlAttribute
@@ -35,4 +36,10 @@ public class Speed {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Speed [value=" + value + ", name=" + name + "]";
+    }
+    
 }

@@ -25,6 +25,9 @@ public class Forecast {
     public void setTimes(List<Time> times) {
         this.times = times;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Forecast [times=" + String.join(", ", times.toString()) + "]";
+    }
 }

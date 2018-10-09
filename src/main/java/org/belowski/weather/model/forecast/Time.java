@@ -139,4 +139,11 @@ public class Time {
     public void setClouds(Clouds clouds) {
         this.clouds = clouds;
     }
+
+    @Override
+    public String toString() {
+        return "Time [from=" + from + ", to=" + to + ", symbol=" + symbol + ", precipitation=" + precipitation
+                + ", windDirection=" + windDirection + ", windSpeed=" + windSpeed + ", temperature=" + temperature
+                + ", pressure=" + pressure + ", humidity=" + humidity + ", clouds=" + clouds + "]";
+    }
 }

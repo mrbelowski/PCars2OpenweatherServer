@@ -59,4 +59,9 @@ public class Temperature {
     public void setMax(float max) {
         this.max = max;
     }
+
+    @Override
+    public String toString() {
+        return "Temperature [unit=" + unit + ", value=" + value + ", min=" + min + ", max=" + max + "]";
+    }
 }

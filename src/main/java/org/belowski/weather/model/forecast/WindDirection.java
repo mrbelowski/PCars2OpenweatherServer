@@ -18,6 +18,8 @@ public class WindDirection {
         super();
         this.deg = deg;
         // set the code and name from the deg
+        this.code = "NNE";
+        this.name = "North-northeast";
     }
 
     @XmlAttribute
@@ -45,6 +47,11 @@ public class WindDirection {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "WindDirection [deg=" + deg + ", code=" + code + ", name=" + name + "]";
     }
 
 }

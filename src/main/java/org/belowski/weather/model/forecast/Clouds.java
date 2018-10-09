@@ -19,6 +19,7 @@ public class Clouds {
         this.all = all;
         this.unit = unit;
         // set value from all
+        this.value = "few clouds";
     }
 
     @XmlAttribute
@@ -47,4 +48,10 @@ public class Clouds {
     public void setUnit(String unit) {
         this.unit = unit;
     }
+
+    @Override
+    public String toString() {
+        return "Clouds [value=" + value + ", all=" + all + ", unit=" + unit + "]";
+    }
+    
 }

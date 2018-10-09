@@ -16,6 +16,7 @@ public class WindSpeed {
         super();
         this.mps = mps;
         // set the name from the mps
+        this.name = "gentle Breeze";
     }
 
     @XmlAttribute
@@ -35,4 +36,10 @@ public class WindSpeed {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "WindSpeed [mps=" + mps + ", name=" + name + "]";
+    }
+    
 }

@@ -36,4 +36,9 @@ public class Pressure {
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return "Pressure [unit=" + unit + ", value=" + value + "]";
+    }
+
 }

@@ -7,11 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import org.belowski.weather.model.Humidity;
 import org.belowski.weather.model.Pressure;
+import org.belowski.weather.model.Sun;
 import org.belowski.weather.model.Temperature;
+import org.belowski.weather.model.current.City;
 import org.belowski.weather.model.current.Clouds;
+import org.belowski.weather.model.current.Coord;
 import org.belowski.weather.model.current.Current;
 import org.belowski.weather.model.current.Direction;
 import org.belowski.weather.model.current.Precipitation;
@@ -19,7 +23,7 @@ import org.belowski.weather.model.current.Speed;
 import org.belowski.weather.model.current.Visibility;
 import org.belowski.weather.model.current.Wind;
 import org.belowski.weather.model.forecast.Forecast;
-import org.belowski.weather.model.forecast.Sun;
+import org.belowski.weather.model.forecast.LocationWrapper;
 import org.belowski.weather.model.forecast.Time;
 import org.belowski.weather.model.forecast.WeatherData;
 import org.belowski.weather.model.forecast.WindDirection;
@@ -32,18 +36,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class WeatherRepositoryImpl implements WeatherRepository {
     
+    private static final Logger LOGGER = Logger.getLogger(WeatherServiceImpl.class.getName());
+    
     private enum ChangeType { IMPROVING, WORSENING };
     
     private static final Random random = new Random();
     
-    private int hoursToCreate = 24;
+    private int hoursToCreate = 28;
     private int samplesPerHour = 6;
     private int secondsForFullRainTransition = 30 * 60;  // rain changes take this many seconds to go from 0 (dry) to 1 (monsoon)
     private int secondsForFullWindTransition = 120 * 60; // wind changes take this many seconds to change from min to max
     private int secondsForFullTempTransition = 120 * 60;   // temp changes take this many seconds to change from min to max
     
-    private float minTemp = 10f;
-    private float maxTemp = 20f;
+    private float minTemp = 283f;
+    private float maxTemp = 293f;
     private float maxRain = 1;
     private float minWindSpeed = 0f;
     private float maxWindSpeed = 20f;
@@ -70,7 +76,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     }
     
     @Override
-    public WeatherData getForecast(float latitude, float longitude, LocalDateTime time) {
+    public WeatherData getForecast(float latitude, float longitude, int items, LocalDateTime time) {
         Location key = new Location((int) latitude, (int) longitude);      
         if (!weather.containsKey(key)) {
             createWeather(key, time, null);
@@ -79,13 +85,20 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         LocalDateTime forecastTime = time.plusHours(3);
         List<Conditions> samplesForForecast = new ArrayList<>();
         List<Conditions> conditions = weather.get(key);
+        int itemsAdded = 0;
         for (Conditions conditionsSample : conditions) {
             if (conditionsSample.getTime().isAfter(forecastTime)) {
                 samplesForForecast.add(conditionsSample);
                 forecastTime = forecastTime.plusHours(3);
+                itemsAdded++;
+            }
+            if (itemsAdded == items) {
+                break;
             }
         }
-        return constructForecast(conditions);
+        WeatherData forecast = constructForecast(latitude, longitude, time, samplesForForecast);
+        LOGGER.info("Got forecast "+ forecast.toString());
+        return forecast;
     }
     
     @Override
@@ -111,7 +124,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         float clouds = conditionsEitherSide[0].getClouds() + ((conditionsEitherSide[1].getClouds() - conditionsEitherSide[0].getClouds()) * proportionAfterSample0);
         float visibility = conditionsEitherSide[0].getVisibility() + ((conditionsEitherSide[1].getVisibility() - conditionsEitherSide[0].getVisibility()) * proportionAfterSample0);
 
-        return new Current(
+        Current sample = new Current(
+                new City(new Coord(latitude, longitude), new Sun(getSunrise(time), getSunset(time))),
                 new Precipitation(convertRainNumberToMMIn3Hours(rain)),
                 new Wind(new Speed(wind), new Direction(conditionsEitherSide[1].getWindDirection())),
                 new Temperature("kelvin", temp, temp, temp),
@@ -119,9 +133,11 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 new Humidity((int) humidity, "%"),
                 new Clouds((int) clouds), 
                 new Visibility((int) visibility));
+        LOGGER.info("got current weather: " + sample.toString());
+        return sample;
     }
     
-    private WeatherData constructForecast(List<Conditions> conditions) {
+    private WeatherData constructForecast(float latitude, float longitude, LocalDateTime time, List<Conditions> conditions) {
         List<Time> times = new ArrayList<>();
         for (Conditions conditionsSample : conditions) {
             times.add(new Time(conditionsSample.getTime().format(WeatherServiceImpl.DTF),
@@ -134,7 +150,16 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                                new Humidity(conditionsSample.getHumidity(), "%"),
                                new org.belowski.weather.model.forecast.Clouds(conditionsSample.getClouds(), "%")));
         }
-        return new WeatherData(new Sun("2018-10-07T05:03:58", "2018-10-07T16:19:16"), new Forecast(times));
+        return new WeatherData(new Sun(getSunrise(time), getSunset(time)), 
+                new LocationWrapper(new org.belowski.weather.model.forecast.Location(latitude, longitude)), new Forecast(times));
+    }
+    
+    private String getSunrise(LocalDateTime time) {
+        return time.withHour(6).format(WeatherServiceImpl.DTF);
+    }
+    
+    private String getSunset(LocalDateTime time) {
+        return time.withHour(20).format(WeatherServiceImpl.DTF);
     }
     
     // internal rain amount is 0 - 1. Need to convert this to rain in mm for 3 hours. 30mm in 3hours is max    
@@ -179,7 +204,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         if (previousConditions == null) {
             // need to guess some start conditions
             // link rain and humidity here
-            float rain = random.nextFloat() * maxRain;
+            //float rain = random.nextFloat() * maxRain;
+            float rain = 1;
             return new Conditions(time, 
                     minTemp + (random.nextFloat() * (maxTemp - minTemp)),
                     rain,
@@ -188,7 +214,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                     rainToClouds(rain),
                     minWindSpeed + (random.nextFloat() * (maxWindSpeed - minWindSpeed)),
                     random.nextInt(360),
-                    (int) ((1-rain) * 20000));
+                    (int) (300 + ((1f - rain) * 10000f)));
         }
         else {
             long secondsSincePrevious = Duration.between(previousConditions.getTime(), time).getSeconds();
@@ -228,7 +254,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                     rainToClouds(newRainAmount),
                     clamp(previousConditions.getWindSpeed() + deltaWind, minWindSpeed, maxWindSpeed),
                     previousConditions.getWindDirection(),
-                    (int) ((1-newRainAmount) * 20000));
+                    (int) (300 + ((1f - newRainAmount) * 10000f)));
         }
     }
     

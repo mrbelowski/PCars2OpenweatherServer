@@ -15,7 +15,8 @@ public class Clouds {
     public Clouds(int value) {
         super();
         this.value = value;
-        // set the name from the value?
+        // set the name from the value
+        this.name = "broken clouds";
     }
 
     @XmlAttribute
@@ -35,4 +36,10 @@ public class Clouds {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Clouds [value=" + value + ", name=" + name + "]";
+    }
+    
 }
