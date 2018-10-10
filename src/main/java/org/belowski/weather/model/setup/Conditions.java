@@ -37,9 +37,10 @@ public class Conditions {
         super();
     }
     
-    public Conditions(ZonedDateTime time, Symbol symbol) {
+    public Conditions(ZonedDateTime time, float temperature, Symbol symbol) {
         super();
         this.time = time;
+        this.temperature = temperature;
         this.symbol = symbol;
     }
 

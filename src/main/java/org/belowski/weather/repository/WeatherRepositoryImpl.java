@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.belowski.weather.model.Humidity;
 import org.belowski.weather.model.Sun;
+import org.belowski.weather.model.WeatherNumber;
 import org.belowski.weather.model.WeatherNumber.ConditionType;
 import org.belowski.weather.model.current.City;
 import org.belowski.weather.model.current.CurrentClouds;
@@ -74,10 +75,15 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         ZonedDateTime sampleTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(slotLengthMinutes);
         List<Conditions> samples = new ArrayList<>();
         for (String slot : slots) {
-            samples.add(new Conditions(sampleTime, new Symbol(ConditionType.valueOf(slot))));
+            ConditionType conditionType = ConditionType.valueOf(slot);
+            samples.add(new Conditions(sampleTime, WeatherNumber.CONDITION_TEMP_DEFAULTS.get(conditionType), new Symbol(conditionType)));
             sampleTime = sampleTime.plusMinutes(slotLengthMinutes);
         }
         weather.put(ANY_LOCATION, samples);
+        if (samples.size() > 0) {
+            LOGGER.info("Created " + samples.size() + " new weather slots for any location, from " + 
+                    samples.get(0).getTime().format(WeatherServiceImpl.DTF) + " to " + samples.get(samples.size() - 1).getTime().format(WeatherServiceImpl.DTF));
+        }
     }
     
     @Override

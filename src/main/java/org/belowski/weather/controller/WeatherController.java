@@ -112,7 +112,7 @@ public class WeatherController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
     
-    @RequestMapping(path = "/weather/create/slots", method = RequestMethod.PUT)
+    @RequestMapping(path = "/weather/create/slots", method = {RequestMethod.PUT, RequestMethod.GET})
     public ResponseEntity<Void> createWeatherFromSlots(
             @RequestParam(name = "slotLength") int slotLengthMinutes,
             @RequestParam(name = "slot") List<String> slots) {

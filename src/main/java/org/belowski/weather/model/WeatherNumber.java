@@ -15,6 +15,7 @@ public class WeatherNumber {
     }
 
     public static final Map<ConditionType, Integer> CONDITION_IDS = new HashMap<>();
+    public static final Map<ConditionType, Float> CONDITION_TEMP_DEFAULTS = new HashMap<>();
     
     static {
         CONDITION_IDS.put(ConditionType.THUNDERSTORM, 202);
@@ -34,7 +35,26 @@ public class WeatherNumber {
         CONDITION_IDS.put(ConditionType.THICK_CLOUD, 803);
         CONDITION_IDS.put(ConditionType.OVERCAST, 804);
     }
-        
+    
+    static {
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.THUNDERSTORM, 10f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 25f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.DRIZZLE, 23f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.HEAVY_DRIZZLE, 20f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.LIGHT_RAIN, 18f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.RAIN, 15f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.HEAVY_RAIN, 13f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.VERY_HEAVY_RAIN, 12f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.HAZE, 20f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.MIST, 10f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.FOG, 10f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.CLEAR, 30f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.SCATTERED_CLOUD, 26f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.CLOUD, 22f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.THICK_CLOUD, 18f);
+        CONDITION_TEMP_DEFAULTS.put(ConditionType.OVERCAST, 12f);
+    }
+    
     private static final Random random = new Random();
     
     public static ConditionType getConditionType(float rainAmount, int visibility, int clouds) {
