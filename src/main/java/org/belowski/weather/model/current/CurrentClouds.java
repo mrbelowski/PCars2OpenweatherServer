@@ -2,17 +2,17 @@ package org.belowski.weather.model.current;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Clouds {
+public class CurrentClouds {
 
     private int value;
 
     private String name;
 
-    public Clouds() {
+    public CurrentClouds() {
         super();
     }
 
-    public Clouds(int value) {
+    public CurrentClouds(int value) {
         super();
         this.value = value;
         // set the name from the value

@@ -17,7 +17,7 @@ public class Time {
 
     private Symbol symbol;
 
-    private Precipitation precipitation;
+    private ForecastPrecipitation precipitation;
     
     private WindDirection windDirection;
     
@@ -29,14 +29,14 @@ public class Time {
 
     private Humidity humidity;
 
-    private Clouds clouds;
+    private ForecastClouds clouds;
 
     public Time() {
         super();
     }
 
-    public Time(String from, String to, Precipitation precipitation, WindDirection windDirection,
-            WindSpeed windSpeed, Temperature temperature, Pressure pressure, Humidity humidity, Clouds clouds) {
+    public Time(String from, String to, ForecastPrecipitation precipitation, WindDirection windDirection,
+            WindSpeed windSpeed, Temperature temperature, Pressure pressure, Humidity humidity, ForecastClouds clouds) {
         super();
         this.from = from;
         this.to = to;
@@ -78,11 +78,11 @@ public class Time {
     }
 
     @XmlElement(name = "precipitation")
-    public Precipitation getPrecipitation() {
+    public ForecastPrecipitation getPrecipitation() {
         return precipitation;
     }
 
-    public void setPrecipitation(Precipitation precipitation) {
+    public void setPrecipitation(ForecastPrecipitation precipitation) {
         this.precipitation = precipitation;
     }
 
@@ -132,11 +132,11 @@ public class Time {
     }
 
     @XmlElement(name = "clouds")
-    public Clouds getClouds() {
+    public ForecastClouds getClouds() {
         return clouds;
     }
 
-    public void setClouds(Clouds clouds) {
+    public void setClouds(ForecastClouds clouds) {
         this.clouds = clouds;
     }
 

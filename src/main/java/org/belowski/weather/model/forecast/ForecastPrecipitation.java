@@ -2,7 +2,7 @@ package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Precipitation {
+public class ForecastPrecipitation {
 
     private String unit = "3h";
 
@@ -10,11 +10,11 @@ public class Precipitation {
 
     private String type;
 
-    public Precipitation() {
+    public ForecastPrecipitation() {
         super();
     }
 
-    public Precipitation(float value) {
+    public ForecastPrecipitation(float value) {
         super();
         this.value = value;
         // type will be "no", "rain", or "snow" I think

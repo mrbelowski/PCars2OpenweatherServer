@@ -2,7 +2,7 @@ package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Clouds {
+public class ForecastClouds {
 
     private String value;
 
@@ -10,11 +10,11 @@ public class Clouds {
 
     private String unit;
 
-    public Clouds() {
+    public ForecastClouds() {
         super();
     }
 
-    public Clouds(int all, String unit) {
+    public ForecastClouds(int all, String unit) {
         super();
         this.all = all;
         this.unit = unit;

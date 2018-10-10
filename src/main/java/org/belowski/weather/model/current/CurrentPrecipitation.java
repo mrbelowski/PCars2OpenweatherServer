@@ -2,7 +2,7 @@ package org.belowski.weather.model.current;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Precipitation {
+public class CurrentPrecipitation {
     
     private String unit = "3h";
 
@@ -11,11 +11,11 @@ public class Precipitation {
     // value is some millimetres-per-3hours I think
     private float value;
 
-    public Precipitation() {
+    public CurrentPrecipitation() {
         super();
     }
 
-    public Precipitation(float value) {
+    public CurrentPrecipitation(float value) {
         super();
         this.value = value;
         // mode will be "no", "rain", or "snow" I think

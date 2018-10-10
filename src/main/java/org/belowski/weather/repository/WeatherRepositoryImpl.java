@@ -15,12 +15,13 @@ import org.belowski.weather.model.Pressure;
 import org.belowski.weather.model.Sun;
 import org.belowski.weather.model.Temperature;
 import org.belowski.weather.model.current.City;
-import org.belowski.weather.model.current.Clouds;
+import org.belowski.weather.model.current.CurrentClouds;
 import org.belowski.weather.model.current.Coord;
 import org.belowski.weather.model.current.Current;
 import org.belowski.weather.model.current.Direction;
-import org.belowski.weather.model.current.Precipitation;
+import org.belowski.weather.model.current.CurrentPrecipitation;
 import org.belowski.weather.model.current.Speed;
+import org.belowski.weather.model.current.Visibility;
 import org.belowski.weather.model.current.Weather;
 import org.belowski.weather.model.current.Wind;
 import org.belowski.weather.model.forecast.Forecast;
@@ -123,15 +124,17 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         float pressure = conditionsEitherSide[0].getPressure() + ((conditionsEitherSide[1].getPressure() - conditionsEitherSide[0].getPressure()) * proportionAfterSample0);
         float humidity = conditionsEitherSide[0].getHumidity() + ((conditionsEitherSide[1].getHumidity() - conditionsEitherSide[0].getHumidity()) * proportionAfterSample0);
         float clouds = conditionsEitherSide[0].getClouds() + ((conditionsEitherSide[1].getClouds() - conditionsEitherSide[0].getClouds()) * proportionAfterSample0);
+        float visibility = conditionsEitherSide[0].getVisibility() + ((conditionsEitherSide[1].getVisibility() - conditionsEitherSide[0].getVisibility()) * proportionAfterSample0);       
 
         Current sample = new Current(
                 new City(new Coord(latitude, longitude), new Sun(getSunrise(time), getSunset(time))),
-                new Precipitation(convertRainNumberToMMIn3Hours(rain)),
+                new CurrentPrecipitation(convertRainNumberToMMIn3Hours(rain)),
                 new Wind(new Speed(wind), new Direction(conditionsEitherSide[1].getWindDirection())),
                 new Temperature("kelvin", temp, temp, temp),
                 new Pressure("hPa", pressure),
                 new Humidity((int) humidity, "%"),
-                new Clouds((int) clouds), 
+                new CurrentClouds((int) clouds), 
+                new Visibility((int) visibility),
                 new Weather(800, "heavy intensity rain", "01n"));
         LOGGER.info("got current weather for location " + latitude + "-" + longitude + ": " + sample.toString());
         return sample;
@@ -142,13 +145,13 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         for (Conditions conditionsSample : conditions) {
             times.add(new Time(conditionsSample.getTime().format(WeatherServiceImpl.DTF),
                                conditionsSample.getTime().plusHours(3).format(WeatherServiceImpl.DTF),
-                               new org.belowski.weather.model.forecast.Precipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
+                               new org.belowski.weather.model.forecast.ForecastPrecipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
                                new WindDirection(conditionsSample.getWindDirection()), 
                                new WindSpeed(conditionsSample.getWindSpeed()), 
                                new Temperature("kelvin", conditionsSample.getTemperature(), conditionsSample.getTemperature(), conditionsSample.getTemperature()),
                                new Pressure("hPa", conditionsSample.getPressure()),
                                new Humidity(conditionsSample.getHumidity(), "%"),
-                               new org.belowski.weather.model.forecast.Clouds(conditionsSample.getClouds(), "%")));
+                               new org.belowski.weather.model.forecast.ForecastClouds(conditionsSample.getClouds(), "%")));
         }
         return new WeatherData(new Sun(getSunrise(time), getSunset(time)), 
                 new LocationWrapper(new org.belowski.weather.model.forecast.Location(latitude, longitude)), new Forecast(times));

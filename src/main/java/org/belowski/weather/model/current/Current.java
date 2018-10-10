@@ -16,7 +16,7 @@ public class Current {
     
     private City city;
 
-    private Precipitation precipitation;
+    private CurrentPrecipitation precipitation;
         
     private Wind wind;
 
@@ -26,18 +26,20 @@ public class Current {
 
     private Humidity humidity;
 
-    private Clouds clouds;
-        
+    private CurrentClouds clouds;
+    
+    private Visibility visibility;
+    
     private LastUpdate lastUpdate;
     
-    private Weather weather;
-
+    private Weather weather;    
+    
     public Current() {
         super();
     }
 
-    public Current(City city, Precipitation precipitation, Wind wind, Temperature temperature, Pressure pressure, 
-            Humidity humidity, Clouds clouds, Weather weather) {
+    public Current(City city, CurrentPrecipitation precipitation, Wind wind, Temperature temperature, Pressure pressure, 
+            Humidity humidity, CurrentClouds clouds, Visibility visibility, Weather weather) {
         super();
         this.city = city;
         this.precipitation = precipitation;
@@ -48,6 +50,7 @@ public class Current {
         this.clouds = clouds;
         this.lastUpdate = new LastUpdate();
         this.lastUpdate.setValue(ZonedDateTime.now(ZoneOffset.UTC).format(WeatherServiceImpl.DTF));
+        this.visibility = visibility;
         this.weather = weather;
     }
     
@@ -61,11 +64,11 @@ public class Current {
     }
 
     @XmlElement(name = "precipitation")
-    public Precipitation getPrecipitation() {
+    public CurrentPrecipitation getPrecipitation() {
         return precipitation;
     }
 
-    public void setPrecipitation(Precipitation precipitation) {
+    public void setPrecipitation(CurrentPrecipitation precipitation) {
         this.precipitation = precipitation;
     }
     
@@ -106,11 +109,11 @@ public class Current {
     }
 
     @XmlElement(name = "clouds")
-    public Clouds getClouds() {
+    public CurrentClouds getClouds() {
         return clouds;
     }
 
-    public void setClouds(Clouds clouds) {
+    public void setClouds(CurrentClouds clouds) {
         this.clouds = clouds;
     }
     
@@ -121,6 +124,15 @@ public class Current {
 
     public void setLastUpdate(LastUpdate lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+    
+    @XmlElement(name = "visibility")
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
     }
     
     @XmlElement(name = "weather")
