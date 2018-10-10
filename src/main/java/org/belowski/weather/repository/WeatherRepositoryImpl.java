@@ -229,8 +229,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             float deltaTemp = 0;
             float deltaPressure = 0;
             if (previousPreviousConditions != null) {
-                // continue changing in a (mostly) linear way - use the same delta, +/- 10%
-                float changeScale = (changeType == ChangeType.IMPROVING ? -1 : 1) + ((random.nextFloat() - 0.5f) / 5);
+                // continue changing in a (mostly) linear way - use the same delta, +/- 5%
+                float changeScale = (changeType == ChangeType.IMPROVING ? -1 : 1) + ((random.nextFloat() - 0.5f) / 10f);
                 deltaRain = Math.abs(previousConditions.getPrecipitation() - previousPreviousConditions.getPrecipitation()) * changeScale;
                 deltaWind =  Math.abs(previousConditions.getWindSpeed() - previousPreviousConditions.getWindSpeed()) * changeScale;
                 deltaTemp = Math.abs(previousConditions.getTemperature() - previousPreviousConditions.getTemperature()) * changeScale;
@@ -250,8 +250,15 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             if (deltaPressure == 0 && random.nextFloat() > 0.7) {
                 deltaPressure = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullRainTransition;
             }
+            
+            // make rain start / stop sticky
             float newRainAmount = clamp(previousConditions.getPrecipitation() + deltaRain, 0, maxRain);
-            LOGGER.info("OLD RAIN = " + previousConditions.getPrecipitation() + " DELTA = " + deltaRain + " NEW RAIN = " + newRainAmount);
+            if (previousConditions.getPrecipitation() == 0 && random.nextFloat() > 0.2) {
+                newRainAmount = 0;
+            }
+            else if (previousConditions.getPrecipitation() > 0 && newRainAmount == 0 && random.nextFloat() > 0.4) {
+                newRainAmount = previousConditions.getPrecipitation();
+            }
             return new Conditions(time, 
                     clamp(previousConditions.getTemperature() + deltaTemp, minTemp, maxTemp), 
                     newRainAmount,
