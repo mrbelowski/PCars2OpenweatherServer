@@ -86,7 +86,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             createWeather(key, time, null);
         }
         // forecast data every 3 hours
-        ZonedDateTime forecastTime = time.plusHours(3);
+        ZonedDateTime forecastTime = time.withMinute(0);        
         List<Conditions> samplesForForecast = new ArrayList<>();
         List<Conditions> conditions = weather.get(key);
         int itemsAdded = 0;
@@ -145,8 +145,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private WeatherData constructForecast(float latitude, float longitude, ZonedDateTime time, List<Conditions> conditions) {
         List<Time> times = new ArrayList<>();
         for (Conditions conditionsSample : conditions) {
-            times.add(new Time(conditionsSample.getTime().format(WeatherServiceImpl.DTF),
-                               conditionsSample.getTime().plusHours(3).format(WeatherServiceImpl.DTF),
+            times.add(new Time(conditionsSample.getTime().withMinute(0).withSecond(0).format(WeatherServiceImpl.DTF),
+                               conditionsSample.getTime().withMinute(0).withSecond(0).plusHours(3).format(WeatherServiceImpl.DTF),
                                new org.belowski.weather.model.forecast.ForecastPrecipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
                                new WindDirection(conditionsSample.getWindDirection()), 
                                new WindSpeed(conditionsSample.getWindSpeed()), 

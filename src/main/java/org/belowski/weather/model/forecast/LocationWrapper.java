@@ -10,7 +10,7 @@ public class LocationWrapper {
     
     private String type = "";
     
-    private String country = "";
+    private String country = "AA";
     
     private String timezone = "";
     
