@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 import javax.xml.transform.Result;
@@ -102,19 +103,21 @@ public class WeatherController {
     }
 
     @RequestMapping(path = "/weather/create/conditions", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public void createWeatherFromConditions(
+    public ResponseEntity<Void> createWeatherFromConditions(
             @RequestParam(name = "lat") Optional<Float> latitude,
             @RequestParam(name = "lon") Optional<Float> longitude,
             @RequestBody CreateConditions createConditions) {
         weatherService.createWeather(latitude, longitude, createConditions.getMinutesBetweenSamples(),
                 createConditions.getConditions());
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
     
     @RequestMapping(path = "/weather/create/slots", method = RequestMethod.PUT)
-    public void createWeatherFromSlots(
+    public ResponseEntity<Void> createWeatherFromSlots(
             @RequestParam(name = "slotLength") int slotLengthMinutes,
-            @RequestParam(name = "slot") String[] slots) {
+            @RequestParam(name = "slot") List<String> slots) {
         weatherService.createWeatherFromSlots(slotLengthMinutes, slots);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @RequestMapping(path = "/data/2.5/forecast", produces = "application/xml; charset=utf-8", consumes = "*/*")

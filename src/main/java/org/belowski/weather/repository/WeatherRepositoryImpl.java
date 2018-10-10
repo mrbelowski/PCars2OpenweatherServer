@@ -70,7 +70,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private Map<Location, List<Conditions>> weather = new HashMap<>();
     
     @Override
-    public void createWeatherFromSlots(int slotLengthMinutes, String[] slots) {
+    public void createWeatherFromSlots(int slotLengthMinutes, List<String> slots) {
         ZonedDateTime sampleTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(slotLengthMinutes);
         List<Conditions> samples = new ArrayList<>();
         for (String slot : slots) {

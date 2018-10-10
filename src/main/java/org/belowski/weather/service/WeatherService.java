@@ -16,5 +16,5 @@ public interface WeatherService {
 
     void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> conditions);
 
-    void createWeatherFromSlots(int slotLengthMinutes, String[] slots);
+    void createWeatherFromSlots(int slotLengthMinutes, List<String> slots);
 }

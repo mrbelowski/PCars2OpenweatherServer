@@ -36,7 +36,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public void createWeatherFromSlots(int slotLengthMinutes, String[] slots) {
+    public void createWeatherFromSlots(int slotLengthMinutes, List<String> slots) {
         weatherRepository.createWeatherFromSlots(slotLengthMinutes, slots);
     }
 }

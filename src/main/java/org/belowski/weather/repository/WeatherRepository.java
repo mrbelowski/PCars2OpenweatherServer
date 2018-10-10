@@ -46,5 +46,5 @@ public interface WeatherRepository {
      * @param slotLengthMinutes
      * @param slots
      */
-    void createWeatherFromSlots(int slotLengthMinutes, String[] slots);
+    void createWeatherFromSlots(int slotLengthMinutes, List<String> slots);
 }
