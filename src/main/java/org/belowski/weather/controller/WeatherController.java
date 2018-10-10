@@ -36,23 +36,44 @@ public class WeatherController {
 
     private static final Logger LOGGER = Logger.getLogger(WeatherController.class.getName());
 
-    @Autowired
     private WeatherService weatherService;
 
-    @Autowired
     private RestTemplate proxyTemplate;
 
-    @Value("${proxy.enabled}")
     private boolean proxyEnabled;
 
-    @Value("${proxy.url}")
     private String proxyUrl;
 
-    @Value("${proxy.user.appId}")
     private String proxyUserAppId;
 
-    @Autowired
     private Marshaller marshaller;
+    
+    public WeatherController(@Autowired WeatherService weatherService,
+                             @Autowired RestTemplate proxyTemplate,
+                             @Autowired Marshaller marshaller,
+                             @Value("${weather.proxy.enabled}") boolean proxyEnabled,
+                             @Value("${weather.proxy.url}") String proxyUrl,
+                             @Value("${weather.proxy.user.appId:NOT SET}") String proxyUserAppId) {
+        super();
+        this.weatherService = weatherService;
+        this.proxyTemplate = proxyTemplate;
+        this.marshaller = marshaller;
+        this.proxyEnabled = proxyEnabled;
+        this.proxyUrl = proxyUrl;
+        this.proxyUserAppId = proxyUserAppId;
+        if (proxyEnabled) {
+            if (proxyUserAppId.equals("NOT SET")) {
+                LOGGER.fatal("\n\nProxy user app ID not provided. Proxying will NOT work. Please start the app in local mode, or provide an API key with the command line argument\n"
+                        + "--weather.proxy.user.appId=[your API key]\n\n");
+                System.exit(1);
+            }
+            else {
+                LOGGER.info("Running in proxy mode, using openweatherapi location " + proxyUrl + " and user's APPID " + proxyUserAppId);
+            }
+        } else {
+            LOGGER.info("Running in local mode, weather data will be generated locally");            
+        }
+    }
 
     @RequestMapping(path = "/data/2.5/weather", produces = "application/xml; charset=utf-8", consumes = "*/*")
     public @ResponseBody ResponseEntity<String> getWeather(@RequestParam(name = "lat") float latitude,
@@ -80,13 +101,20 @@ public class WeatherController {
                     createHeaders("/data/2.5/weather", originalAppId, latitude, longitude), HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/weather/create", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public void createWeather(
+    @RequestMapping(path = "/weather/create/conditions", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    public void createWeatherFromConditions(
             @RequestParam(name = "lat") Optional<Float> latitude,
             @RequestParam(name = "lon") Optional<Float> longitude,
             @RequestBody CreateConditions createConditions) {
         weatherService.createWeather(latitude, longitude, createConditions.getMinutesBetweenSamples(),
                 createConditions.getConditions());
+    }
+    
+    @RequestMapping(path = "/weather/create/slots", method = RequestMethod.PUT)
+    public void createWeatherFromSlots(
+            @RequestParam(name = "slotLength") int slotLengthMinutes,
+            @RequestParam(name = "slot") String[] slots) {
+        weatherService.createWeatherFromSlots(slotLengthMinutes, slots);
     }
 
     @RequestMapping(path = "/data/2.5/forecast", produces = "application/xml; charset=utf-8", consumes = "*/*")

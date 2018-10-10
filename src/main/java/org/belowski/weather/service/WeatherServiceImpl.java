@@ -34,4 +34,9 @@ public class WeatherServiceImpl implements WeatherService {
     public void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> conditions) {
         weatherRepository.createWeather(latitude, longitude, minutesBetweenSamples, conditions);
     }
+
+    @Override
+    public void createWeatherFromSlots(int slotLengthMinutes, String[] slots) {
+        weatherRepository.createWeatherFromSlots(slotLengthMinutes, slots);
+    }
 }

@@ -21,6 +21,12 @@ public class Weather {
         return new Weather(WeatherNumber.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
     }
     
+    public Weather(ConditionType conditionType) {
+        super();
+        this.conditionType = conditionType;
+        this.number = WeatherNumber.CONDITION_IDS.get(conditionType);
+    }
+    
     private Weather(ConditionType conditionType, String value, String icon) {
         super();
         this.conditionType = conditionType;

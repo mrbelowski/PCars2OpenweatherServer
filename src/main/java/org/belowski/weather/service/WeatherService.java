@@ -15,4 +15,6 @@ public interface WeatherService {
     WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time);
 
     void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> conditions);
+
+    void createWeatherFromSlots(int slotLengthMinutes, String[] slots);
 }

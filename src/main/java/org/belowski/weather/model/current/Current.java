@@ -37,7 +37,10 @@ public class Current {
     public Current() {
         super();
     }
-
+    public Current(Weather weather) {
+        this.weather = weather;
+    }
+    
     public Current(City city, CurrentPrecipitation precipitation, Wind wind, CurrentTemperature temperature, CurrentPressure pressure, 
             Humidity humidity, CurrentClouds clouds, Visibility visibility, Weather weather) {
         super();

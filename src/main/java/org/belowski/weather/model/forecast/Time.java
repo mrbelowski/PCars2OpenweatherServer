@@ -35,6 +35,13 @@ public class Time {
         super();
     }
 
+    public Time(String from, String to, Symbol symbol) {
+        super();
+        this.from = from;
+        this.to = to;
+        this.symbol = symbol;
+    }
+    
     public Time(String from, String to, ForecastPrecipitation precipitation, WindDirection windDirection,
             WindSpeed windSpeed, ForecastTemperature temperature, ForecastPressure pressure, Humidity humidity, ForecastClouds clouds,
             float rainNumber, int visibility) {

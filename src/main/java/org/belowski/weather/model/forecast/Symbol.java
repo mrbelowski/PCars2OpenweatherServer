@@ -23,6 +23,12 @@ public class Symbol {
         super();
     }
 
+    public Symbol(ConditionType conditionType) {
+        super();
+        this.conditionType = conditionType;
+        this.number = WeatherNumber.CONDITION_IDS.get(conditionType);
+    }
+    
     private Symbol(ConditionType conditionType, String name, String var) {
         super();
         this.conditionType = conditionType;

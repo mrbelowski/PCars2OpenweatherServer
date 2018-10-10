@@ -40,4 +40,11 @@ public interface WeatherRepository {
      * @param conditions
      */
     void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> conditions);
+
+    /**
+     * 
+     * @param slotLengthMinutes
+     * @param slots
+     */
+    void createWeatherFromSlots(int slotLengthMinutes, String[] slots);
 }

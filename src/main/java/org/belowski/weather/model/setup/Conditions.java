@@ -2,6 +2,8 @@ package org.belowski.weather.model.setup;
 
 import java.time.ZonedDateTime;
 
+import org.belowski.weather.model.forecast.Symbol;
+
 /**
  * Used to set weather
  * 
@@ -28,8 +30,17 @@ public class Conditions {
     
     private int visibility;
     
+    // only used when setting from a list of symbols;
+    private Symbol symbol;
+    
     public Conditions() {
         super();
+    }
+    
+    public Conditions(ZonedDateTime time, Symbol symbol) {
+        super();
+        this.time = time;
+        this.symbol = symbol;
     }
 
     public Conditions(ZonedDateTime time, float temperature, float precipitation, float pressure, int humidity,
@@ -116,6 +127,14 @@ public class Conditions {
 
     public void setVisibility(int visibility) {
         this.visibility = visibility;
+    }
+
+    public Symbol getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(Symbol symbol) {
+        this.symbol = symbol;
     }
 
     public Conditions cloneForTime(ZonedDateTime start) {

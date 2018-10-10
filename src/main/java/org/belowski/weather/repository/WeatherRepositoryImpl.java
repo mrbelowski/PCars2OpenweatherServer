@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.belowski.weather.model.Humidity;
 import org.belowski.weather.model.Sun;
+import org.belowski.weather.model.WeatherNumber.ConditionType;
 import org.belowski.weather.model.current.City;
 import org.belowski.weather.model.current.CurrentClouds;
 import org.belowski.weather.model.current.Coord;
@@ -29,6 +30,7 @@ import org.belowski.weather.model.forecast.Forecast;
 import org.belowski.weather.model.forecast.ForecastPressure;
 import org.belowski.weather.model.forecast.ForecastTemperature;
 import org.belowski.weather.model.forecast.LocationWrapper;
+import org.belowski.weather.model.forecast.Symbol;
 import org.belowski.weather.model.forecast.Time;
 import org.belowski.weather.model.forecast.WeatherData;
 import org.belowski.weather.model.forecast.WindDirection;
@@ -43,7 +45,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     
     private static final Logger LOGGER = Logger.getLogger(WeatherServiceImpl.class.getName());
     
-    public static Location ANY_LOCATION = new Location(0,  0);
+    public static Location ANY_LOCATION = new Location(9999,  9999);
     
     private enum ChangeType { IMPROVING, WORSENING };
     
@@ -66,6 +68,17 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private int maxTimeBeforeChangingWeatherDirection = 60 * 120;    // don't allow weather to continue worsening for > 2 hours
     
     private Map<Location, List<Conditions>> weather = new HashMap<>();
+    
+    @Override
+    public void createWeatherFromSlots(int slotLengthMinutes, String[] slots) {
+        ZonedDateTime sampleTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(slotLengthMinutes);
+        List<Conditions> samples = new ArrayList<>();
+        for (String slot : slots) {
+            samples.add(new Conditions(sampleTime, new Symbol(ConditionType.valueOf(slot))));
+            sampleTime = sampleTime.plusMinutes(slotLengthMinutes);
+        }
+        weather.put(ANY_LOCATION, samples);
+    }
     
     @Override
     public void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> samples) {
@@ -135,6 +148,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             createWeather(key, time, conditionsEitherSide[1]);
             conditionsEitherSide = getConditionsEitherSide(key, time);
         }
+        else if (conditionsEitherSide[0].getSymbol() != null) {
+            // just return this
+            return new Current(new Weather(conditionsEitherSide[0].getSymbol().getConditionType()));
+        }
         // now we have the conditions either side of the sample, linearly scale each value to create the current weather
         // need to know how close we are to each side here
         float proportionAfterSample0 = (float) Duration.between(conditionsEitherSide[0].getTime(), time).getSeconds() / 
@@ -166,7 +183,14 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private WeatherData constructForecast(float latitude, float longitude, int minutesBetweenSamples, ZonedDateTime time, List<Conditions> conditions) {
         List<Time> times = new ArrayList<>();
         for (Conditions conditionsSample : conditions) {
-            times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
+            if (conditionsSample.getSymbol() != null) {
+                times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
+                                   conditionsSample.getTime().withSecond(0).plusMinutes(minutesBetweenSamples).format(WeatherServiceImpl.DTF),
+                                   conditionsSample.getSymbol()));
+                                   
+            }
+            else {
+                times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
                                conditionsSample.getTime().withSecond(0).plusMinutes(minutesBetweenSamples).format(WeatherServiceImpl.DTF),
                                new org.belowski.weather.model.forecast.ForecastPrecipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
                                new WindDirection(conditionsSample.getWindDirection()), 
@@ -177,6 +201,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                                new org.belowski.weather.model.forecast.ForecastClouds(conditionsSample.getClouds(), "%"),
                                conditionsSample.getPrecipitation(),
                                conditionsSample.getVisibility()));
+            }
         }
         return new WeatherData(new Sun(getSunrise(time), getSunset(time)), 
                 new LocationWrapper(new org.belowski.weather.model.forecast.Location(latitude, longitude)), new Forecast(times));
