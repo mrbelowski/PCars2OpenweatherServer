@@ -251,13 +251,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 deltaPressure = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullRainTransition;
             }
             
-            // make rain start / stop sticky
+            // make the transition from dry to rain less likely
             float newRainAmount = clamp(previousConditions.getPrecipitation() + deltaRain, 0, maxRain);
             if (previousConditions.getPrecipitation() == 0 && random.nextFloat() > 0.2) {
                 newRainAmount = 0;
-            }
-            else if (previousConditions.getPrecipitation() > 0 && newRainAmount == 0 && random.nextFloat() > 0.4) {
-                newRainAmount = previousConditions.getPrecipitation();
             }
             return new Conditions(time, 
                     clamp(previousConditions.getTemperature() + deltaTemp, minTemp, maxTemp), 
