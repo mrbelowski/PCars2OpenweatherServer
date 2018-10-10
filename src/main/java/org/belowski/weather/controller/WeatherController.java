@@ -83,7 +83,7 @@ public class WeatherController {
         Current current;
         if (proxyEnabled) {
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyUrl + "/data/2.5/weather")
-                    .queryParam("lat", 63.4427).queryParam("lon", 6-20.2734).queryParam("mode", "xml")
+                    .queryParam("lat", latitude).queryParam("lon", longitude).queryParam("mode", "xml")
                     .queryParam("APPID", proxyUserAppId);
             current = proxyTemplate.getForEntity(builder.toUriString(), Current.class).getBody();
             LOGGER.info("got current conditions from weather server");            
@@ -127,7 +127,7 @@ public class WeatherController {
         WeatherData weatherData;
         if (proxyEnabled) {
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyUrl + "/data/2.5/forecast")
-                    .queryParam("lat", 63.4427).queryParam("lon", 6-20.2734).queryParam("mode", "xml")
+                    .queryParam("lat", latitude).queryParam("lon", longitude).queryParam("mode", "xml")
                     .queryParam("cnt", 8).queryParam("APPID", proxyUserAppId);
             weatherData = proxyTemplate.getForEntity(builder.toUriString(), WeatherData.class).getBody();
             LOGGER.info("got forecast from weather server");
