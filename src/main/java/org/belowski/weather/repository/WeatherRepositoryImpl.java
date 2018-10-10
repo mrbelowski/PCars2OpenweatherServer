@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -42,6 +43,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     
     private static final Logger LOGGER = Logger.getLogger(WeatherServiceImpl.class.getName());
     
+    public static Location ANY_LOCATION = new Location(0,  0);
+    
     private enum ChangeType { IMPROVING, WORSENING };
     
     private static final Random random = new Random();
@@ -65,7 +68,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private Map<Location, List<Conditions>> weather = new HashMap<>();
     
     @Override
-    public void createWeather(float latitude, float longitude, int minutesBetweenSamples, List<Conditions> samples) {
+    public void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> samples) {
         ZonedDateTime sampleTime = ZonedDateTime.now(ZoneOffset.UTC);
         for (Conditions conditionsSample : samples) {
             if (conditionsSample.getTime() == null) {
@@ -73,17 +76,27 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             }
             sampleTime = sampleTime.plusMinutes(minutesBetweenSamples);
         }
-        
-        Location key = new Location((int) latitude, (int) longitude);
+        Location key;
+        if (latitude.isPresent() && longitude.isPresent()) {
+            key = new Location(latitude.get().intValue(), longitude.get().intValue());
+        }
+        else {
+            key = ANY_LOCATION;
+        }
         // just overwrite
         weather.put(key, samples);
     }
     
     @Override
     public WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time) {
-        Location key = new Location((int) latitude, (int) longitude);      
+        Location key = new Location((int) latitude, (int) longitude);
         if (!weather.containsKey(key)) {
-            createWeather(key, time, null);
+            if (weather.containsKey(ANY_LOCATION)) {
+                key = ANY_LOCATION;
+            }
+            else {
+                createWeather(key, time, null);
+            }
         }
         // forecast data every minutesBetweenPoints
         ZonedDateTime forecastTime = time.minusMinutes(minutesBetweenPoints);  
@@ -108,6 +121,14 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     @Override
     public Current getWeather(float latitude, float longitude, ZonedDateTime time) {
         Location key = new Location((int) latitude, (int) longitude);
+        if (!weather.containsKey(key)) {
+            if (weather.containsKey(ANY_LOCATION)) {
+                key = ANY_LOCATION;
+            }
+            else {
+                createWeather(key, time, null);
+            }
+        }
         Conditions[] conditionsEitherSide = getConditionsEitherSide(key, time);
         if (conditionsEitherSide[0] == null) {
             // we have no weather data so we need to create some

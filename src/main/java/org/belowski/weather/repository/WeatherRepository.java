@@ -2,6 +2,7 @@ package org.belowski.weather.repository;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.belowski.weather.model.current.Current;
 import org.belowski.weather.model.forecast.WeatherData;
@@ -38,5 +39,5 @@ public interface WeatherRepository {
      * @param minutesBetweenSamples
      * @param conditions
      */
-    void createWeather(float latitude, float longitude, int minutesBetweenSamples, List<Conditions> conditions);
+    void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> conditions);
 }

@@ -3,6 +3,7 @@ package org.belowski.weather.service;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import org.belowski.weather.model.current.Current;
 import org.belowski.weather.model.forecast.WeatherData;
@@ -30,7 +31,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public void createWeather(float latitude, float longitude, int minutesBetweenSamples, List<Conditions> conditions) {
+    public void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> conditions) {
         weatherRepository.createWeather(latitude, longitude, minutesBetweenSamples, conditions);
     }
 }

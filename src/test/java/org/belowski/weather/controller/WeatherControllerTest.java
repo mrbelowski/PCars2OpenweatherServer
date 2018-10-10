@@ -29,7 +29,8 @@ public class WeatherControllerTest {
     public void testGetWeather() throws Exception {
         MvcResult result = this.mockMvc.perform(get("/data/2.5/weather").
                 param("lat", "1.23").
-                param("lon", "3.45")).andReturn();
+                param("lon", "3.45").
+                param("APPID", "aaaa")).andReturn();
         String content = result.getResponse().getContentAsString();
         assertNotNull(content);
     }
@@ -38,15 +39,14 @@ public class WeatherControllerTest {
     public void testCreateWeather() throws Exception {
         String json = new BufferedReader(new InputStreamReader(WeatherControllerTest.class.getResourceAsStream("/createPayload.json"))).lines().collect(Collectors.joining("\n"));
         this.mockMvc.perform(post("/weather/create").
-                param("lat", "1.23").
-                param("lon", "3.45").
                 contentType(MediaType.APPLICATION_JSON).
                 content(json)).andExpect(status().isOk());
         
         // now check we get back the weather we're expecting
         MvcResult result = this.mockMvc.perform(get("/data/2.5/weather").
                 param("lat", "1.23").
-                param("lon", "3.45")).andReturn();
+                param("lon", "3.45").
+                param("APPID", "aaaa")).andReturn();
         String content = result.getResponse().getContentAsString();
         // TODO: xpath assertions
         /*assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><current><clouds name=\"broken clouds\" value=\"20\"/>"
@@ -57,7 +57,8 @@ public class WeatherControllerTest {
         // and the forecast
         result = this.mockMvc.perform(get("/data/2.5/forecast").
                 param("lat", "1.23").
-                param("lon", "3.45")).andReturn();
+                param("lon", "3.45").
+                param("APPID", "aaaa")).andReturn();
         content = result.getResponse().getContentAsString();
         assertNotNull(content);
     }

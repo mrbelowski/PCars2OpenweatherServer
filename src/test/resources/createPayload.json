@@ -1,5 +1,5 @@
 {
-	"minutesBetweenSamples": 10,
+	"minutesBetweenSamples": 20,
 	"conditions": [{
 		"temperature": 273,
 		"precipitation": 0.5,

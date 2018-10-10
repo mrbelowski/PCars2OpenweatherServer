@@ -81,7 +81,9 @@ public class WeatherController {
     }
 
     @RequestMapping(path = "/weather/create", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public void createWeather(@RequestParam(name = "lat") float latitude, @RequestParam(name = "lon") float longitude,
+    public void createWeather(
+            @RequestParam(name = "lat") Optional<Float> latitude,
+            @RequestParam(name = "lon") Optional<Float> longitude,
             @RequestBody CreateConditions createConditions) {
         weatherService.createWeather(latitude, longitude, createConditions.getMinutesBetweenSamples(),
                 createConditions.getConditions());
