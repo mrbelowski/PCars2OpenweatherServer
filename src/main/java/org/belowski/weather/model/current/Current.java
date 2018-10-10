@@ -5,13 +5,13 @@ import java.time.ZonedDateTime;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.belowski.weather.model.Humidity;
-import org.belowski.weather.model.Pressure;
-import org.belowski.weather.model.Temperature;
 import org.belowski.weather.service.WeatherServiceImpl;
 
 @XmlRootElement(name = "current")
+@XmlType(propOrder={"city", "temperature", "humidity", "pressure", "wind", "clouds", "visibility", "precipitation", "weather", "lastUpdate"})
 public class Current {
     
     private City city;
@@ -20,9 +20,9 @@ public class Current {
         
     private Wind wind;
 
-    private Temperature temperature;
+    private CurrentTemperature temperature;
 
-    private Pressure pressure;
+    private CurrentPressure pressure;
 
     private Humidity humidity;
 
@@ -38,7 +38,7 @@ public class Current {
         super();
     }
 
-    public Current(City city, CurrentPrecipitation precipitation, Wind wind, Temperature temperature, Pressure pressure, 
+    public Current(City city, CurrentPrecipitation precipitation, Wind wind, CurrentTemperature temperature, CurrentPressure pressure, 
             Humidity humidity, CurrentClouds clouds, Visibility visibility, Weather weather) {
         super();
         this.city = city;
@@ -82,20 +82,20 @@ public class Current {
     }
 
     @XmlElement(name = "temperature")
-    public Temperature getTemperature() {
+    public CurrentTemperature getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(Temperature temperature) {
+    public void setTemperature(CurrentTemperature temperature) {
         this.temperature = temperature;
     }
 
     @XmlElement(name = "pressure")
-    public Pressure getPressure() {
+    public CurrentPressure getPressure() {
         return pressure;
     }
 
-    public void setPressure(Pressure pressure) {
+    public void setPressure(CurrentPressure pressure) {
         this.pressure = pressure;
     }
 

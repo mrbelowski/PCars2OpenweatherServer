@@ -3,12 +3,12 @@ package org.belowski.weather.model.forecast;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.belowski.weather.model.Humidity;
-import org.belowski.weather.model.Pressure;
-import org.belowski.weather.model.Temperature;
 
 @XmlRootElement(name = "time")
+@XmlType(propOrder={"symbol", "precipitation", "windDirection", "windSpeed", "temperature", "pressure", "humidity", "clouds"})
 public class Time {
 
     private String from;
@@ -23,9 +23,9 @@ public class Time {
     
     private WindSpeed windSpeed;
 
-    private Temperature temperature;
+    private ForecastTemperature temperature;
 
-    private Pressure pressure;
+    private ForecastPressure pressure;
 
     private Humidity humidity;
 
@@ -36,7 +36,7 @@ public class Time {
     }
 
     public Time(String from, String to, ForecastPrecipitation precipitation, WindDirection windDirection,
-            WindSpeed windSpeed, Temperature temperature, Pressure pressure, Humidity humidity, ForecastClouds clouds) {
+            WindSpeed windSpeed, ForecastTemperature temperature, ForecastPressure pressure, Humidity humidity, ForecastClouds clouds) {
         super();
         this.from = from;
         this.to = to;
@@ -48,6 +48,7 @@ public class Time {
         this.humidity = humidity;
         this.clouds = clouds;
         // now do we need to create a Symbol object?
+        this.symbol = new Symbol(500, "light rain", "10n");
     }
 
     @XmlAttribute
@@ -105,20 +106,20 @@ public class Time {
     }
 
     @XmlElement(name = "temperature")
-    public Temperature getTemperature() {
+    public ForecastTemperature getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(Temperature temperature) {
+    public void setTemperature(ForecastTemperature temperature) {
         this.temperature = temperature;
     }
 
     @XmlElement(name = "pressure")
-    public Pressure getPressure() {
+    public ForecastPressure getPressure() {
         return pressure;
     }
 
-    public void setPressure(Pressure pressure) {
+    public void setPressure(ForecastPressure pressure) {
         this.pressure = pressure;
     }
 

@@ -1,7 +1,9 @@
 package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(propOrder={"altitude", "latitude", "longitude", "geobase", "geobaseId"})
 public class Location {
 
     private float altitude = 0;
@@ -9,6 +11,10 @@ public class Location {
     private float latitude;
     
     private float longitude;
+    
+    private String geobase = "geonames";
+    
+    private String geobaseId = "";
     
     public Location() {
         super();
@@ -46,4 +52,23 @@ public class Location {
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
+
+    public String getGeobase() {
+        return geobase;
+    }
+
+    @XmlAttribute(name = "geobase")
+    public void setGeobase(String geobase) {
+        this.geobase = geobase;
+    }
+
+    public String getGeobaseId() {
+        return geobaseId;
+    }
+
+    @XmlAttribute(name = "geobaseid")
+    public void setGeobaseId(String geobaseId) {
+        this.geobaseId = geobaseId;
+    }
+    
 }

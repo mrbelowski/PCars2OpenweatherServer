@@ -1,18 +1,20 @@
-package org.belowski.weather.model;
+package org.belowski.weather.model.current;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
-public class Pressure {
+@XmlType(propOrder={"unit", "value"})
+public class CurrentPressure {
 
     private String unit;
 
     private float value;
 
-    public Pressure() {
+    public CurrentPressure() {
         super();
     }
 
-    public Pressure(String unit, float value) {
+    public CurrentPressure(String unit, float value) {
         super();
         this.unit = unit;
         this.value = value;

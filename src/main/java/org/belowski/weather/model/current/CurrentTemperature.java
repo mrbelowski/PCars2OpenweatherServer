@@ -1,8 +1,10 @@
-package org.belowski.weather.model;
+package org.belowski.weather.model.current;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
-public class Temperature {
+@XmlType(propOrder={"value", "min", "max", "unit"})
+public class CurrentTemperature {
 
     private String unit;
 
@@ -12,11 +14,11 @@ public class Temperature {
 
     private float max;
 
-    public Temperature() {
+    public CurrentTemperature() {
         super();
     }
 
-    public Temperature(String unit, float value, float min, float max) {
+    public CurrentTemperature(String unit, float value, float min, float max) {
         super();
         this.unit = unit;
         this.value = value;

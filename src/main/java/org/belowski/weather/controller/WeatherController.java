@@ -48,20 +48,21 @@ public class WeatherController {
     @Value("${proxy.url}")
     private String proxyUrl;
 
-    @Value("${proxy.appId}")
-    private String proxyAppId;
+    @Value("${proxy.user.appId}")
+    private String proxyUserAppId;
 
     @Autowired
     private Marshaller marshaller;
 
     @RequestMapping(path = "/data/2.5/weather", produces = "application/xml; charset=utf-8", consumes = "*/*")
     public @ResponseBody ResponseEntity<String> getWeather(@RequestParam(name = "lat") float latitude,
-            @RequestParam(name = "lon") float longitude, @RequestParam(name = "time") Optional<Long> time) throws IOException {
+            @RequestParam(name = "lon") float longitude, @RequestParam(name = "APPID") String originalAppId,
+            @RequestParam(name = "time") Optional<Long> time) throws IOException {
         Current current;
         if (proxyEnabled) {
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyUrl + "/data/2.5/weather")
                     .queryParam("lat", latitude).queryParam("lon", longitude).queryParam("mode", "xml")
-                    .queryParam("APPID", proxyAppId);
+                    .queryParam("APPID", proxyUserAppId);
             current = proxyTemplate.getForEntity(builder.toUriString(), Current.class).getBody();
             LOGGER.info("got current conditions from weather server");            
         } else {            
@@ -76,7 +77,7 @@ public class WeatherController {
         String response = postProcessXML(sw.toString());
         LOGGER.info(response);
         return new ResponseEntity<String>(response,
-                    createHeaders("/data/2.5/weather", proxyAppId, latitude, longitude), HttpStatus.OK);
+                    createHeaders("/data/2.5/weather", originalAppId, latitude, longitude), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/weather/create", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
@@ -88,12 +89,13 @@ public class WeatherController {
 
     @RequestMapping(path = "/data/2.5/forecast", produces = "application/xml; charset=utf-8", consumes = "*/*")
     public @ResponseBody ResponseEntity<String> getForecast(@RequestParam(name = "lat") float latitude,
-            @RequestParam(name = "lon") float longitude, @RequestParam(name = "time") Optional<Long> time) throws IOException {
+            @RequestParam(name = "lon") float longitude, @RequestParam(name = "APPID") String originalAppId,
+            @RequestParam(name = "time") Optional<Long> time) throws IOException {
         WeatherData weatherData;
         if (proxyEnabled) {
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyUrl + "/data/2.5/forecast")
                     .queryParam("lat", latitude).queryParam("lon", longitude).queryParam("mode", "xml")
-                    .queryParam("cnt", 8).queryParam("APPID", proxyAppId);
+                    .queryParam("cnt", 8).queryParam("APPID", proxyUserAppId);
             weatherData = proxyTemplate.getForEntity(builder.toUriString(), WeatherData.class).getBody();
             LOGGER.info("got forecast from weather server");
         } else {
@@ -108,7 +110,7 @@ public class WeatherController {
         String response = postProcessXML(sw.toString());
         LOGGER.info(response);
         return new ResponseEntity<String>(response,
-                createHeaders("/data/2.5/forecast", proxyAppId, latitude, longitude), HttpStatus.OK);
+                createHeaders("/data/2.5/forecast", originalAppId, latitude, longitude), HttpStatus.OK);
     }
     
     /**
@@ -124,17 +126,18 @@ public class WeatherController {
      * @return
      */
     private String postProcessXML(String xml) {
-        xml = xml.replaceAll("<(\\w+)([^>]*)?>\\s*</\\1>", "<$1$2/>");
         xml = xml.replaceAll("<(\\w+)([^/>]*)?/>","<$1$2></$1>");
-        return xml;
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + xml;
     }
 
     private HttpHeaders createHeaders(String endpoint, String appId, float lat, float lon) {
         HttpHeaders headers = new HttpHeaders();
+        headers.add("Server", "openresty");
         headers.add("X-Cache-Key", endpoint + "?APPID=" + appId + "&lat=" + lat + "&lon=" + lon + "&mode=xml");
         headers.add("Access-Control-Allow-Origin", "*");
         headers.add("Access-Control-Allow-Credentials", "true");
         headers.add("Access-Control-Allow-Methods", "GET, POST");
+        headers.add("Connection", "keep-alive");
         return headers;
     }
 }

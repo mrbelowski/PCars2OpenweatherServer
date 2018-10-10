@@ -31,7 +31,7 @@ public class Application {
         Map<String, Object> props = new HashMap<>();
         props.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, false);
         props.put("jaxb.formatted.output", false);
-
+        props.put(javax.xml.bind.Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
         Jaxb2Marshaller m = new Jaxb2Marshaller();
         m.setMarshallerProperties(props);
         m.setPackagesToScan("org.belowski.weather.model");

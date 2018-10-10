@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 public class Visibility {
 
-    private int value;
+    private int value = 10000;
 
     public Visibility(int value) {
         super();

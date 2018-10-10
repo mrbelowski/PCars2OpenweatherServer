@@ -1,7 +1,9 @@
 package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(propOrder={"deg", "code", "name"})
 public class WindDirection {
 
     private float deg;

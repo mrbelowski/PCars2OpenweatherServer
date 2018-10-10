@@ -1,15 +1,16 @@
 package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
-
+@XmlType(propOrder={"name", "type", "country", "timezone", "location"})
 public class LocationWrapper {
 
-    private String name = "NA";
+    private String name = "";
     
     private String type = "";
     
-    private String country = "NA";
+    private String country = "";
     
     private String timezone = "";
     

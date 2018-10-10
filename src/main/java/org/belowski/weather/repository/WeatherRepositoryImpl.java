@@ -11,20 +11,22 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import org.belowski.weather.model.Humidity;
-import org.belowski.weather.model.Pressure;
 import org.belowski.weather.model.Sun;
-import org.belowski.weather.model.Temperature;
 import org.belowski.weather.model.current.City;
 import org.belowski.weather.model.current.CurrentClouds;
 import org.belowski.weather.model.current.Coord;
 import org.belowski.weather.model.current.Current;
 import org.belowski.weather.model.current.Direction;
+import org.belowski.weather.model.current.CurrentPressure;
 import org.belowski.weather.model.current.CurrentPrecipitation;
 import org.belowski.weather.model.current.Speed;
+import org.belowski.weather.model.current.CurrentTemperature;
 import org.belowski.weather.model.current.Visibility;
 import org.belowski.weather.model.current.Weather;
 import org.belowski.weather.model.current.Wind;
 import org.belowski.weather.model.forecast.Forecast;
+import org.belowski.weather.model.forecast.ForecastPressure;
+import org.belowski.weather.model.forecast.ForecastTemperature;
 import org.belowski.weather.model.forecast.LocationWrapper;
 import org.belowski.weather.model.forecast.Time;
 import org.belowski.weather.model.forecast.WeatherData;
@@ -128,10 +130,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
 
         Current sample = new Current(
                 new City(new Coord(latitude, longitude), new Sun(getSunrise(time), getSunset(time))),
-                new CurrentPrecipitation(convertRainNumberToMMIn3Hours(rain)),
+                new CurrentPrecipitation(2f/*convertRainNumberToMMIn3Hours(rain)*/),
                 new Wind(new Speed(wind), new Direction(conditionsEitherSide[1].getWindDirection())),
-                new Temperature("kelvin", temp, temp, temp),
-                new Pressure("hPa", pressure),
+                new CurrentTemperature("kelvin", temp, temp, temp),
+                new CurrentPressure("hPa", pressure),
                 new Humidity((int) humidity, "%"),
                 new CurrentClouds((int) clouds), 
                 new Visibility((int) visibility),
@@ -148,8 +150,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                                new org.belowski.weather.model.forecast.ForecastPrecipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
                                new WindDirection(conditionsSample.getWindDirection()), 
                                new WindSpeed(conditionsSample.getWindSpeed()), 
-                               new Temperature("kelvin", conditionsSample.getTemperature(), conditionsSample.getTemperature(), conditionsSample.getTemperature()),
-                               new Pressure("hPa", conditionsSample.getPressure()),
+                               new ForecastTemperature("kelvin", conditionsSample.getTemperature(), conditionsSample.getTemperature(), conditionsSample.getTemperature()),
+                               new ForecastPressure("hPa", conditionsSample.getPressure()),
                                new Humidity(conditionsSample.getHumidity(), "%"),
                                new org.belowski.weather.model.forecast.ForecastClouds(conditionsSample.getClouds(), "%")));
         }
@@ -208,7 +210,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             // need to guess some start conditions
             // link rain and humidity here
             //float rain = random.nextFloat() * maxRain;
-            float rain = 0.1f;
+            float rain = 0.5f;
             return new Conditions(time, 
                     minTemp + (random.nextFloat() * (maxTemp - minTemp)),
                     rain,

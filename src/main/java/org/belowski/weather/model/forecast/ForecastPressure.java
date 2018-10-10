@@ -1,20 +1,20 @@
-package org.belowski.weather.model;
+package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder={"value", "unit"})
-public class Humidity {
+public class ForecastPressure {
 
     private String unit;
 
-    private int value;
+    private float value;
 
-    public Humidity() {
+    public ForecastPressure() {
         super();
     }
 
-    public Humidity(int value, String unit) {
+    public ForecastPressure(String unit, float value) {
         super();
         this.unit = unit;
         this.value = value;
@@ -30,17 +30,17 @@ public class Humidity {
     }
 
     @XmlAttribute
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(float value) {
         this.value = value;
     }
 
     @Override
     public String toString() {
-        return "Humidity [unit=" + unit + ", value=" + value + "]";
+        return "Pressure [unit=" + unit + ", value=" + value + "]";
     }
 
 }

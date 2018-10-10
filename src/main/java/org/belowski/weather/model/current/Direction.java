@@ -1,7 +1,9 @@
 package org.belowski.weather.model.current;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(propOrder={"value", "code", "name"})
 public class Direction {
 
     private float value;
