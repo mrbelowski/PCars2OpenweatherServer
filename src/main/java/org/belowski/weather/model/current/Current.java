@@ -146,8 +146,6 @@ public class Current {
 
     @Override
     public String toString() {
-        return "Current [precipitation=" + precipitation + ", wind=" + wind
-                + ", temperature=" + temperature + ", pressure=" + pressure + ", humidity=" + humidity + ", clouds="
-                + clouds + "]";
+        return "Current [conditionType= " + weather.getConditionType() + "]";
     }
 }

@@ -11,7 +11,7 @@ public interface WeatherService {
 
     Current getWeather(float latitude, float longitude, ZonedDateTime time);
     
-    WeatherData getForecast(float latitude, float longitude, int items, ZonedDateTime time);
+    WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time);
 
     void createWeather(float latitude, float longitude, int minutesBetweenSamples, List<Conditions> conditions);
 }

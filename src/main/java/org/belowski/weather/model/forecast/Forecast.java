@@ -28,6 +28,12 @@ public class Forecast {
 
     @Override
     public String toString() {
-        return "Forecast [times=" + String.join(", ", times.toString()) + "]";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Forecast [times=");
+        for (Time time : times) {
+            sb.append(time.toString()).append("\n");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

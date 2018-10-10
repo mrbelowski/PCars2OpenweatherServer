@@ -25,8 +25,8 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public WeatherData getForecast(float latitude, float longitude, int items, ZonedDateTime time) {
-        return weatherRepository.getForecast(latitude, longitude, items, time);
+    public WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time) {
+        return weatherRepository.getForecast(latitude, longitude, items, minutesBetweenPoints, time);
     }
 
     @Override

@@ -36,7 +36,8 @@ public class Time {
     }
 
     public Time(String from, String to, ForecastPrecipitation precipitation, WindDirection windDirection,
-            WindSpeed windSpeed, ForecastTemperature temperature, ForecastPressure pressure, Humidity humidity, ForecastClouds clouds) {
+            WindSpeed windSpeed, ForecastTemperature temperature, ForecastPressure pressure, Humidity humidity, ForecastClouds clouds,
+            float rainNumber, int visibility) {
         super();
         this.from = from;
         this.to = to;
@@ -47,8 +48,7 @@ public class Time {
         this.pressure = pressure;
         this.humidity = humidity;
         this.clouds = clouds;
-        // now do we need to create a Symbol object?
-        this.symbol = new Symbol(500, "light rain", "10n");
+        this.symbol = Symbol.generate(rainNumber, visibility, this.clouds.getAll());
     }
 
     @XmlAttribute
@@ -143,8 +143,6 @@ public class Time {
 
     @Override
     public String toString() {
-        return "Time [from=" + from + ", to=" + to + ", symbol=" + symbol + ", precipitation=" + precipitation
-                + ", windDirection=" + windDirection + ", windSpeed=" + windSpeed + ", temperature=" + temperature
-                + ", pressure=" + pressure + ", humidity=" + humidity + ", clouds=" + clouds + "]";
+        return "Time [from=" + from + ", to=" + to + ", conditionType= " + symbol.getConditionType() + "]";
     }
 }

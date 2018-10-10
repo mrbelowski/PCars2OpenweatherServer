@@ -14,7 +14,7 @@ public class Location {
     
     private String geobase = "geonames";
     
-    private String geobaseId = "";
+    private String geobaseId = "2653591";   // this is donington. No idea if we need to look this up properly
     
     public Location() {
         super();

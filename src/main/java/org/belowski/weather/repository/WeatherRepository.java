@@ -15,10 +15,11 @@ public interface WeatherRepository {
      * @param latitude
      * @param longitude     
      * @param items
+     * @param minutesBetweenPoints
      * @param time
      * @return
      */
-    WeatherData getForecast(float latitude, float longitude, int items, ZonedDateTime time);
+    WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time);
     
     /**
      * Creates and returns a sample.

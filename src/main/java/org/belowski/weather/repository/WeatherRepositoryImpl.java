@@ -53,13 +53,13 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private int secondsForFullTempTransition = 120 * 60;   // temp changes take this many seconds to change from min to max
     
     private float minTemp = 283f;
-    private float maxTemp = 293f;
-    private float maxRain = 1;
-    private float minWindSpeed = 20f;
-    private float maxWindSpeed = 40f;
+    private float maxTemp = 313f;
+    private float maxRain = 1f;
+    private float minWindSpeed = 0f;
+    private float maxWindSpeed = 30f;
     private float minPressure = 980f;
     private float maxPressure = 1020f;
-    private int minTimeBeforeChangingWeatherDirection = 10 * 60;    // don't change from improving to worsening before 10 minutes
+    private int minTimeBeforeChangingWeatherDirection = 20 * 60;    // don't change from improving to worsening before 20 minutes
     private int maxTimeBeforeChangingWeatherDirection = 60 * 120;    // don't allow weather to continue worsening for > 2 hours
     
     private Map<Location, List<Conditions>> weather = new HashMap<>();
@@ -80,27 +80,27 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     }
     
     @Override
-    public WeatherData getForecast(float latitude, float longitude, int items, ZonedDateTime time) {
+    public WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time) {
         Location key = new Location((int) latitude, (int) longitude);      
         if (!weather.containsKey(key)) {
             createWeather(key, time, null);
         }
-        // forecast data every 3 hours
-        ZonedDateTime forecastTime = time.withMinute(0);        
+        // forecast data every minutesBetweenPoints
+        ZonedDateTime forecastTime = time.minusMinutes(minutesBetweenPoints);  
         List<Conditions> samplesForForecast = new ArrayList<>();
         List<Conditions> conditions = weather.get(key);
         int itemsAdded = 0;
         for (Conditions conditionsSample : conditions) {
             if (conditionsSample.getTime().isAfter(forecastTime)) {
                 samplesForForecast.add(conditionsSample);
-                forecastTime = forecastTime.plusHours(3);
+                forecastTime = forecastTime.plusMinutes(minutesBetweenPoints);
                 itemsAdded++;
             }
             if (itemsAdded == items) {
                 break;
             }
         }
-        WeatherData forecast = constructForecast(latitude, longitude, time, samplesForForecast);
+        WeatherData forecast = constructForecast(latitude, longitude, minutesBetweenPoints, time, samplesForForecast);
         LOGGER.info("Got forecast location " + latitude + "-" + longitude + ": "+ forecast.toString());
         return forecast;
     }
@@ -125,35 +125,37 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         float temp = conditionsEitherSide[0].getTemperature() + ((conditionsEitherSide[1].getTemperature() - conditionsEitherSide[0].getTemperature()) * proportionAfterSample0);
         float pressure = conditionsEitherSide[0].getPressure() + ((conditionsEitherSide[1].getPressure() - conditionsEitherSide[0].getPressure()) * proportionAfterSample0);
         float humidity = conditionsEitherSide[0].getHumidity() + ((conditionsEitherSide[1].getHumidity() - conditionsEitherSide[0].getHumidity()) * proportionAfterSample0);
-        float clouds = conditionsEitherSide[0].getClouds() + ((conditionsEitherSide[1].getClouds() - conditionsEitherSide[0].getClouds()) * proportionAfterSample0);
-        float visibility = conditionsEitherSide[0].getVisibility() + ((conditionsEitherSide[1].getVisibility() - conditionsEitherSide[0].getVisibility()) * proportionAfterSample0);       
+        int clouds = (int) (conditionsEitherSide[0].getClouds() + ((conditionsEitherSide[1].getClouds() - conditionsEitherSide[0].getClouds()) * proportionAfterSample0));
+        int visibility = (int) (conditionsEitherSide[0].getVisibility() + ((conditionsEitherSide[1].getVisibility() - conditionsEitherSide[0].getVisibility()) * proportionAfterSample0));       
 
         Current sample = new Current(
                 new City(new Coord(latitude, longitude), new Sun(getSunrise(time), getSunset(time))),
-                new CurrentPrecipitation(2f/*convertRainNumberToMMIn3Hours(rain)*/),
+                new CurrentPrecipitation(convertRainNumberToMMIn3Hours(rain)),
                 new Wind(new Speed(wind), new Direction(conditionsEitherSide[1].getWindDirection())),
                 new CurrentTemperature("kelvin", temp, temp, temp),
                 new CurrentPressure("hPa", pressure),
                 new Humidity((int) humidity, "%"),
-                new CurrentClouds((int) clouds), 
-                new Visibility((int) visibility),
-                new Weather(800, "heavy intensity rain", "01n"));
+                new CurrentClouds(clouds), 
+                new Visibility(visibility),
+                Weather.generate(rain, visibility, clouds));
         LOGGER.info("got current weather for location " + latitude + "-" + longitude + ": " + sample.toString());
         return sample;
     }
     
-    private WeatherData constructForecast(float latitude, float longitude, ZonedDateTime time, List<Conditions> conditions) {
+    private WeatherData constructForecast(float latitude, float longitude, int minutesBetweenSamples, ZonedDateTime time, List<Conditions> conditions) {
         List<Time> times = new ArrayList<>();
         for (Conditions conditionsSample : conditions) {
-            times.add(new Time(conditionsSample.getTime().withMinute(0).withSecond(0).format(WeatherServiceImpl.DTF),
-                               conditionsSample.getTime().withMinute(0).withSecond(0).plusHours(3).format(WeatherServiceImpl.DTF),
+            times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
+                               conditionsSample.getTime().withSecond(0).plusMinutes(minutesBetweenSamples).format(WeatherServiceImpl.DTF),
                                new org.belowski.weather.model.forecast.ForecastPrecipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
                                new WindDirection(conditionsSample.getWindDirection()), 
                                new WindSpeed(conditionsSample.getWindSpeed()), 
                                new ForecastTemperature("kelvin", conditionsSample.getTemperature(), conditionsSample.getTemperature(), conditionsSample.getTemperature()),
                                new ForecastPressure("hPa", conditionsSample.getPressure()),
                                new Humidity(conditionsSample.getHumidity(), "%"),
-                               new org.belowski.weather.model.forecast.ForecastClouds(conditionsSample.getClouds(), "%")));
+                               new org.belowski.weather.model.forecast.ForecastClouds(conditionsSample.getClouds(), "%"),
+                               conditionsSample.getPrecipitation(),
+                               conditionsSample.getVisibility()));
         }
         return new WeatherData(new Sun(getSunrise(time), getSunset(time)), 
                 new LocationWrapper(new org.belowski.weather.model.forecast.Location(latitude, longitude)), new Forecast(times));
@@ -209,8 +211,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         if (previousConditions == null) {
             // need to guess some start conditions
             // link rain and humidity here
-            //float rain = random.nextFloat() * maxRain;
-            float rain = 0.5f;
+            float rain = random.nextFloat() > 0.8 ? random.nextFloat() * maxRain : 0;
             return new Conditions(time, 
                     minTemp + (random.nextFloat() * (maxTemp - minTemp)),
                     rain,
@@ -238,19 +239,19 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             
             // for any deltas which are zero, allow a small change to happen randomly
             if (deltaRain == 0 && random.nextFloat() > 0.7) {
-                deltaRain = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1 : 1) * secondsSincePrevious / secondsForFullRainTransition;
+                deltaRain = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullRainTransition;
             }
             if (deltaWind == 0 && random.nextFloat() > 0.7) {
-                deltaWind = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1 : 1) * secondsSincePrevious / secondsForFullWindTransition;
+                deltaWind = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullWindTransition;
             }
             if (deltaTemp == 0 && random.nextFloat() > 0.7) {
-                deltaTemp = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1 : 1) * secondsSincePrevious / secondsForFullTempTransition;
+                deltaTemp = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullTempTransition;
             }
             if (deltaPressure == 0 && random.nextFloat() > 0.7) {
-                deltaPressure = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1 : 1) * secondsSincePrevious / secondsForFullRainTransition;
+                deltaPressure = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullRainTransition;
             }
-            
             float newRainAmount = clamp(previousConditions.getPrecipitation() + deltaRain, 0, maxRain);
+            LOGGER.info("OLD RAIN = " + previousConditions.getPrecipitation() + " DELTA = " + deltaRain + " NEW RAIN = " + newRainAmount);
             return new Conditions(time, 
                     clamp(previousConditions.getTemperature() + deltaTemp, minTemp, maxTemp), 
                     newRainAmount,

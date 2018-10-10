@@ -2,22 +2,31 @@ package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-// do we need this?
+import org.belowski.weather.model.WeatherNumber;
+import org.belowski.weather.model.WeatherNumber.ConditionType;
+
 public class Symbol {
+    
+    private ConditionType conditionType;
 
     private int number;
 
     private String name;
 
     private String var;
+    
+    public static Symbol generate(float rainAmount, int visibility, int clouds) {
+        return new Symbol(WeatherNumber.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
+    }
 
     public Symbol() {
         super();
     }
 
-    public Symbol(int number, String name, String var) {
+    private Symbol(ConditionType conditionType, String name, String var) {
         super();
-        this.number = number;
+        this.conditionType = conditionType;
+        this.number = WeatherNumber.CONDITION_IDS.get(conditionType);
         this.name = name;
         this.var = var;
     }
@@ -47,5 +56,9 @@ public class Symbol {
 
     public void setVar(String var) {
         this.var = var;
+    }
+
+    public ConditionType getConditionType() {
+        return conditionType;
     }
 }
