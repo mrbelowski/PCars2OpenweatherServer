@@ -1,6 +1,6 @@
 package org.belowski.weather.controller;
 
-import org.belowski.weather.model.WeatherNumber.ConditionType;
+import org.belowski.weather.model.ConditionsConstants.ConditionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class WeatherNumber {
+public class ConditionsConstants {
     
     public enum ConditionType {
         THUNDERSTORM,
@@ -16,6 +16,7 @@ public class WeatherNumber {
 
     public static final Map<ConditionType, Integer> CONDITION_IDS = new HashMap<>();
     public static final Map<ConditionType, Float> CONDITION_TEMP_DEFAULTS = new HashMap<>();
+    public static final Map<ConditionType, Float[]> CONDITION_WIND_DEFAULTS = new HashMap<>();
     
     static {
         CONDITION_IDS.put(ConditionType.THUNDERSTORM, 202);
@@ -53,6 +54,25 @@ public class WeatherNumber {
         CONDITION_TEMP_DEFAULTS.put(ConditionType.CLOUD, 22f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.THICK_CLOUD, 18f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.OVERCAST, 12f);
+    }
+    
+    static {
+        CONDITION_WIND_DEFAULTS.put(ConditionType.THUNDERSTORM, new Float[] {15f, 30f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, new Float[] {0f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.DRIZZLE, new Float[] {0f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.HEAVY_DRIZZLE, new Float[] {5f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.LIGHT_RAIN, new Float[] {5f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.RAIN, new Float[] {5f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.HEAVY_RAIN, new Float[] {5f, 15f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.VERY_HEAVY_RAIN, new Float[] {5f, 20f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.HAZE, new Float[] {0f, 5f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.MIST, new Float[] {0f, 2f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.FOG, new Float[] {0f, 2f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.CLEAR, new Float[] {0f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.SCATTERED_CLOUD, new Float[] {0f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.CLOUD, new Float[] {5f, 10f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.THICK_CLOUD, new Float[] {5f, 15f});
+        CONDITION_WIND_DEFAULTS.put(ConditionType.OVERCAST, new Float[] {5f, 15f});
     }
     
     private static final Random random = new Random();

@@ -37,10 +37,12 @@ public class Conditions {
         super();
     }
     
-    public Conditions(ZonedDateTime time, float temperature, Symbol symbol) {
+    public Conditions(ZonedDateTime time, float temperature, float windSpeed, int windDirection, Symbol symbol) {
         super();
         this.time = time;
         this.temperature = temperature;
+        this.windSpeed = windSpeed;
+        this.windDirection = windDirection;
         this.symbol = symbol;
     }
 

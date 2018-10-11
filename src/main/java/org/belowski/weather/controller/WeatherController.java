@@ -114,9 +114,11 @@ public class WeatherController {
     
     @RequestMapping(path = "/weather/create/slots", method = {RequestMethod.PUT, RequestMethod.GET})
     public ResponseEntity<Void> createWeatherFromSlots(
+            @RequestParam(name = "lat") Optional<Float> latitude,
+            @RequestParam(name = "lon") Optional<Float> longitude,
             @RequestParam(name = "slotLength") int slotLengthMinutes,
             @RequestParam(name = "slot") List<String> slots) {
-        weatherService.createWeatherFromSlots(slotLengthMinutes, slots);
+        weatherService.createWeatherFromSlots(latitude, longitude, slotLengthMinutes, slots);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

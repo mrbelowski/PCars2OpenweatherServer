@@ -11,6 +11,7 @@ import org.belowski.weather.model.setup.Conditions;
 import org.belowski.weather.repository.WeatherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class WeatherServiceImpl implements WeatherService {
@@ -36,7 +37,7 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public void createWeatherFromSlots(int slotLengthMinutes, List<String> slots) {
-        weatherRepository.createWeatherFromSlots(slotLengthMinutes, slots);
+    public void createWeatherFromSlots(Optional<Float> latitude, Optional<Float> longitude, int slotLengthMinutes, List<String> slots) {
+        weatherRepository.createWeatherFromSlots(latitude, longitude, slotLengthMinutes, slots);
     }
 }

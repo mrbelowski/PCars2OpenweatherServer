@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.belowski.weather.model.current.Current;
 import org.belowski.weather.model.forecast.WeatherData;
 import org.belowski.weather.model.setup.Conditions;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface WeatherService {
 
@@ -16,5 +17,5 @@ public interface WeatherService {
 
     void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> conditions);
 
-    void createWeatherFromSlots(int slotLengthMinutes, List<String> slots);
+    void createWeatherFromSlots(Optional<Float> latitude, Optional<Float> longitude, int slotLengthMinutes, List<String> slots);
 }

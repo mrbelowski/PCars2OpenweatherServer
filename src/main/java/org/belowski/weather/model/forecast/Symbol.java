@@ -2,8 +2,8 @@ package org.belowski.weather.model.forecast;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.belowski.weather.model.WeatherNumber;
-import org.belowski.weather.model.WeatherNumber.ConditionType;
+import org.belowski.weather.model.ConditionsConstants;
+import org.belowski.weather.model.ConditionsConstants.ConditionType;
 
 public class Symbol {
     
@@ -16,7 +16,7 @@ public class Symbol {
     private String var;
     
     public static Symbol generate(float rainAmount, int visibility, int clouds) {
-        return new Symbol(WeatherNumber.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
+        return new Symbol(ConditionsConstants.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
     }
 
     public Symbol() {
@@ -26,13 +26,13 @@ public class Symbol {
     public Symbol(ConditionType conditionType) {
         super();
         this.conditionType = conditionType;
-        this.number = WeatherNumber.CONDITION_IDS.get(conditionType);
+        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
     }
     
     private Symbol(ConditionType conditionType, String name, String var) {
         super();
         this.conditionType = conditionType;
-        this.number = WeatherNumber.CONDITION_IDS.get(conditionType);
+        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
         this.name = name;
         this.var = var;
     }

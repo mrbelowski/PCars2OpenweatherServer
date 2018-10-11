@@ -1,5 +1,6 @@
 package org.belowski.weather.repository;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
@@ -13,8 +14,8 @@ import java.util.logging.Logger;
 
 import org.belowski.weather.model.Humidity;
 import org.belowski.weather.model.Sun;
-import org.belowski.weather.model.WeatherNumber;
-import org.belowski.weather.model.WeatherNumber.ConditionType;
+import org.belowski.weather.model.ConditionsConstants;
+import org.belowski.weather.model.ConditionsConstants.ConditionType;
 import org.belowski.weather.model.current.City;
 import org.belowski.weather.model.current.CurrentClouds;
 import org.belowski.weather.model.current.Coord;
@@ -46,7 +47,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     
     private static final Logger LOGGER = Logger.getLogger(WeatherServiceImpl.class.getName());
     
-    public static Location ANY_LOCATION = new Location(9999,  9999);
+    public static Location ANY_LOCATION = Location.create(9999f, 9999f);
     
     private enum ChangeType { IMPROVING, WORSENING };
     
@@ -71,15 +72,37 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private Map<Location, List<Conditions>> weather = new HashMap<>();
     
     @Override
-    public void createWeatherFromSlots(int slotLengthMinutes, List<String> slots) {
+    public void createWeatherFromSlots(Optional<Float> latitude, Optional<Float> longitude, int slotLengthMinutes, List<String> slots) {
         ZonedDateTime sampleTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(slotLengthMinutes);
         List<Conditions> samples = new ArrayList<>();
+        int windDirection = random.nextInt(360);
+        float windSpeed = -1;
         for (String slot : slots) {
             ConditionType conditionType = ConditionType.valueOf(slot);
-            samples.add(new Conditions(sampleTime, WeatherNumber.CONDITION_TEMP_DEFAULTS.get(conditionType), new Symbol(conditionType)));
+            Float[] windRange = ConditionsConstants.CONDITION_WIND_DEFAULTS.get(conditionType);
+            float newWindSpeed = windRange[0] + random.nextFloat() * (windRange[1] - windRange[0]);
+            if (windSpeed == -1) {
+                windSpeed = newWindSpeed;
+            }
+            else {
+                // if we already have a wind speed from the previous data point, base our next speed on this
+                windSpeed = clamp(windSpeed + ((newWindSpeed - windSpeed) / 2), 0, 30);
+            }
+            samples.add(new Conditions(sampleTime, 
+                    ConditionsConstants.CONDITION_TEMP_DEFAULTS.get(conditionType),
+                    windSpeed,
+                    windDirection,
+                    new Symbol(conditionType)));
             sampleTime = sampleTime.plusMinutes(slotLengthMinutes);
         }
-        weather.put(ANY_LOCATION, samples);
+        Location key;
+        if (latitude.isPresent() && longitude.isPresent()) {
+            key = Location.create(latitude.get().intValue(), longitude.get().intValue());
+        }
+        else {
+            key = ANY_LOCATION;
+        }
+        weather.put(key, samples);
         if (samples.size() > 0) {
             LOGGER.info("Created " + samples.size() + " new weather slots for any location, from " + 
                     samples.get(0).getTime().format(WeatherServiceImpl.DTF) + " to " + samples.get(samples.size() - 1).getTime().format(WeatherServiceImpl.DTF));
@@ -97,7 +120,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         }
         Location key;
         if (latitude.isPresent() && longitude.isPresent()) {
-            key = new Location(latitude.get().intValue(), longitude.get().intValue());
+            key = Location.create(latitude.get().intValue(), longitude.get().intValue());
         }
         else {
             key = ANY_LOCATION;
@@ -108,7 +131,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     
     @Override
     public WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time) {
-        Location key = new Location((int) latitude, (int) longitude);
+        Location key = Location.create(latitude, longitude);
         if (!weather.containsKey(key)) {
             if (weather.containsKey(ANY_LOCATION)) {
                 key = ANY_LOCATION;
@@ -139,7 +162,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     
     @Override
     public Current getWeather(float latitude, float longitude, ZonedDateTime time) {
-        Location key = new Location((int) latitude, (int) longitude);
+        Location key = Location.create(latitude, longitude);
         if (!weather.containsKey(key)) {
             if (weather.containsKey(ANY_LOCATION)) {
                 key = ANY_LOCATION;

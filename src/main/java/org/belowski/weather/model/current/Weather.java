@@ -3,8 +3,8 @@ package org.belowski.weather.model.current;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.belowski.weather.model.WeatherNumber;
-import org.belowski.weather.model.WeatherNumber.ConditionType;
+import org.belowski.weather.model.ConditionsConstants;
+import org.belowski.weather.model.ConditionsConstants.ConditionType;
 
 @XmlType(propOrder={"number", "value", "icon"})
 public class Weather {
@@ -18,19 +18,19 @@ public class Weather {
     private String icon;
     
     public static Weather generate(float rainAmount, int visibility, int clouds) {
-        return new Weather(WeatherNumber.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
+        return new Weather(ConditionsConstants.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
     }
     
     public Weather(ConditionType conditionType) {
         super();
         this.conditionType = conditionType;
-        this.number = WeatherNumber.CONDITION_IDS.get(conditionType);
+        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
     }
     
     private Weather(ConditionType conditionType, String value, String icon) {
         super();
         this.conditionType = conditionType;
-        this.number = WeatherNumber.CONDITION_IDS.get(conditionType);
+        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
         this.value = value;
         this.icon = icon;
     }
