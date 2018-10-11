@@ -11,19 +11,24 @@ server but with a different (working) API key.
 
 There's a pre-built uber-jar file (jar with all dependencies) in the /build folder, or you can build it yourself with
 
+```
 mvn package
-
+```
 You need to add this entry to your hosts file - /etc/hosts (linux) or c:\Windows\System32\drivers\etc\hosts (windows):
-127.0.0.1 api.openweathermap.org
 
+```
+127.0.0.1 api.openweathermap.org
+```
 This redirects pCars2's openweather API queries to the local system.
 
 
 ### Standalone mode
 
 Run the app with
-java -jar weather-api-0.1.0-spring-boot.jar
 
+```
+java -jar weather-api-0.1.0-spring-boot.jar
+```
 The app will serve its own weather data in this mode (current conditions and forecast).
 
 
@@ -34,8 +39,9 @@ If you use the URL here (api.openweathermap.org) it'll get redirected by the sys
 
 You'll also need an API key - this can be obtained for free from openweathermap.org. They limit the number of queries so I recommend you don't share your key.
 
+```
 java -jar weather-api-0.1.0-spring-boot.jar --weather.proxy.enabled=true --weather.proxy.url=http://[weather server IP address] --weather.proxy.user.appId=[your app id]
-
+```
 
 ### Weather generation
 
@@ -44,7 +50,9 @@ Note that currently this doesn't take the type of location (desert, Scotland, et
 
 You can create your own conditions by invoking the endpoint (as a GET request - use Curl or just put the URL into a browser):
 
+```
 http://localhost/weather/create/slots?slotLength=20&slot=RAIN&slot=LIGHT_RAIN&slot=OVERCAST etc etc
+```
 
 slotLength is in minutes, slot can be one of:
 ```
@@ -55,7 +63,9 @@ The app will scale temperature and wind according to the slot type.
 This will create the sequence of weather that will apply to every location. If you want to create weather for a specific location only, specify
 the latitude and longitude on the URL - 
 
+```
 http://localhost/weather/create/slots?latitude=12.34&longitude=56.78&slotLength=20&slot=RAIN&slot=LIGHT_RAIN&slot=OVERCAST
+```
 
 If you do this, the app will only return this weather sequence when the game requests weather for this location (the latitude / longitude match is to 2 decimal places).
 
@@ -66,6 +76,7 @@ http://localhost/weather/create/condition
 
 Again, lat and lon are optional parameters and work the same way as for the slots endpoint. The payload (currently...) looks like this:
 (temps are in kelvin, precipitation is 0 [dry] - 1 [monsoon], pressure is in mmHg, humitidy is %, wind speed is in m/s, direction is in degrees and visibility is in metres)
+
 ```
 {
 	"minutesBetweenSamples": 20,
