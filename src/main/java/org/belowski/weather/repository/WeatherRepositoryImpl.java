@@ -1,8 +1,7 @@
 package org.belowski.weather.repository;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +71,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     
     @Override
     public void createWeatherFromSlots(Optional<Float> latitude, Optional<Float> longitude, int slotLengthMinutes, List<String> slots) {
-        ZonedDateTime sampleTime = ZonedDateTime.now(ZoneOffset.UTC).minusMinutes(slotLengthMinutes);
+        LocalDateTime sampleTime = LocalDateTime.now().minusMinutes(slotLengthMinutes);
         List<Conditions> samples = new ArrayList<>();
         int windDirection = random.nextInt(360);
         float windSpeed = -1;
@@ -83,6 +82,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             int humidity = ConditionsConstants.CONDITION_HUMIDITY_DEFAULTS.get(conditionType);
             int visibility = ConditionsConstants.CONDITION_VISIBILITY_DEFAULTS.get(conditionType);
             int pressure = ConditionsConstants.CONDITION_PRESSURE_DEFAULTS.get(conditionType);
+            float rain = ConditionsConstants.CONDITION_RAIN_DEFAULTS.get(conditionType);
             float newWindSpeed = windRange[0] + random.nextFloat() * (windRange[1] - windRange[0]);
             if (windSpeed == -1) {
                 windSpeed = newWindSpeed;
@@ -99,6 +99,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                     humidity,
                     visibility,
                     pressure,
+                    rain,
                     new Symbol(conditionType)));
             sampleTime = sampleTime.plusMinutes(slotLengthMinutes);
         }
@@ -113,12 +114,19 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         if (samples.size() > 0) {
             LOGGER.info("Created " + samples.size() + " new weather slots for any location, from " + 
                     samples.get(0).getTime().format(WeatherServiceImpl.DTF) + " to " + samples.get(samples.size() - 1).getTime().format(WeatherServiceImpl.DTF));
+            StringBuilder sb = new StringBuilder();
+            sb.append("Conditions [\n");
+            for (Conditions sample : samples) {
+                sb.append(sample.toString()).append("\n");
+            }
+            sb.append("]");
+            LOGGER.info(sb.toString());
         }
     }
     
     @Override
     public void createWeather(Optional<Float> latitude, Optional<Float> longitude, int minutesBetweenSamples, List<Conditions> samples) {
-        ZonedDateTime sampleTime = ZonedDateTime.now(ZoneOffset.UTC);
+        LocalDateTime sampleTime = LocalDateTime.now();
         for (Conditions conditionsSample : samples) {
             if (conditionsSample.getTime() == null) {
                 conditionsSample.setTime(sampleTime);                
@@ -137,7 +145,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     }
     
     @Override
-    public WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time) {
+    public WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, LocalDateTime time) {
         Location key = Location.create(latitude, longitude);
         if (!weather.containsKey(key)) {
             if (weather.containsKey(ANY_LOCATION)) {
@@ -148,12 +156,12 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             }
         }
         // forecast data every minutesBetweenPoints
-        ZonedDateTime forecastTime = time.minusMinutes(minutesBetweenPoints);  
+        LocalDateTime forecastTime = time.minusMinutes(minutesBetweenPoints);  
         List<Conditions> samplesForForecast = new ArrayList<>();
         List<Conditions> conditions = weather.get(key);
         int itemsAdded = 0;
         for (Conditions conditionsSample : conditions) {
-            if (conditionsSample.getTime().isAfter(forecastTime)) {
+            if (!conditionsSample.getTime().isBefore(forecastTime)) {
                 samplesForForecast.add(conditionsSample);
                 forecastTime = forecastTime.plusMinutes(minutesBetweenPoints);
                 itemsAdded++;
@@ -162,13 +170,25 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 break;
             }
         }
+        
         WeatherData forecast = constructForecast(latitude, longitude, minutesBetweenPoints, time, samplesForForecast);
+        if (forecast.getForecast().getTimes().size() < items) {
+            LOGGER.info("padding forecast end");
+            Time timeToClone = forecast.getForecast().getTimes().get(forecast.getForecast().getTimes().size() - 1);
+            for (int i = forecast.getForecast().getTimes().size(); i < items + 1; i++) {
+                String from = timeToClone.getTo();
+                String to = LocalDateTime.parse(from, WeatherServiceImpl.DTF).plusMinutes(minutesBetweenPoints).format(WeatherServiceImpl.DTF);     
+                Time cloned = timeToClone.cloneToNewPeriod(from, to);
+                forecast.getForecast().getTimes().add(cloned);
+                timeToClone = cloned;
+            }
+        }
         LOGGER.info("Got forecast location " + latitude + ", " + longitude + ": "+ forecast.toString());
         return forecast;
     }
     
     @Override
-    public Current getWeather(float latitude, float longitude, ZonedDateTime time) {
+    public Current getWeather(float latitude, float longitude, LocalDateTime time) {
         Location key = Location.create(latitude, longitude);
         if (!weather.containsKey(key)) {
             if (weather.containsKey(ANY_LOCATION)) {
@@ -179,7 +199,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             }
         }
         Conditions[] conditionsEitherSide = getConditionsEitherSide(key, time);
-        if (conditionsEitherSide[0] == null) {
+        if (conditionsEitherSide[0] == null || conditionsEitherSide[1] == null) {
             // we have no weather data so we need to create some
             createWeather(key, time, ConditionsConstants.getPrevailingConditions(latitude, longitude, time), conditionsEitherSide[1]);
             conditionsEitherSide = getConditionsEitherSide(key, time);
@@ -212,7 +232,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         return sample;
     }
     
-    private WeatherData constructForecast(float latitude, float longitude, int minutesBetweenSamples, ZonedDateTime time, List<Conditions> conditions) {
+    private WeatherData constructForecast(float latitude, float longitude, int minutesBetweenSamples, LocalDateTime time, List<Conditions> conditions) {
         List<Time> times = new ArrayList<>();
         for (Conditions conditionsSample : conditions) {
             times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
@@ -231,11 +251,11 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 new LocationWrapper(new org.belowski.weather.model.forecast.Location(latitude, longitude)), new Forecast(times));
     }
     
-    private String getSunrise(ZonedDateTime time) {
+    private String getSunrise(LocalDateTime time) {
         return time.withHour(6).format(WeatherServiceImpl.DTF);
     }
     
-    private String getSunset(ZonedDateTime time) {
+    private String getSunset(LocalDateTime time) {
         return time.withHour(20).format(WeatherServiceImpl.DTF);
     }
     
@@ -248,18 +268,18 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         return (rainNumber - 0.5f) * 60;
     }
 
-    private void createWeather(Location location, ZonedDateTime start, ConditionsConstants.PrevailingConditions prevailingConditions, Conditions initialConditions) {
+    private void createWeather(Location location, LocalDateTime start, ConditionsConstants.PrevailingConditions prevailingConditions, Conditions initialConditions) {
         LOGGER.info("Creating weather with prevailing conditions " + prevailingConditions);
         List<Conditions> generatedConditions = new ArrayList<>();
         // create 24 hours (?) of weather from start - 1 hour
-        ZonedDateTime sampleTime = start.minusHours(1);
+        LocalDateTime sampleTime = start.minusHours(1);
         // start with our first sample. If we have initialConditions, use them without altering them
         Conditions previousConditions = null;
         Conditions previousPreviousConditions = null;
         if (initialConditions != null) {
             previousConditions = initialConditions.cloneForTime(start);
         }
-        ZonedDateTime lastConditionsDirectionChange = sampleTime;
+        LocalDateTime lastConditionsDirectionChange = sampleTime;
         ChangeType changeType = random.nextInt(2) == 0 ? ChangeType.IMPROVING : ChangeType.WORSENING;
         for (int i=0; i<hoursToCreate * samplesPerHour; i++) {
             sampleTime = sampleTime.plusMinutes(10);
@@ -279,7 +299,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     }
     
     private Conditions createNewConditions(ConditionsConstants.PrevailingConditions prevailingConditions,
-            ZonedDateTime time, Conditions previousPreviousConditions, Conditions previousConditions, ChangeType changeType) {
+            LocalDateTime time, Conditions previousPreviousConditions, Conditions previousConditions, ChangeType changeType) {
         
         // scale the rain likelihood - make it very rare for dry places, twice as common for wet places
         float rainLikelihoodScale;
@@ -387,14 +407,14 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         }
     }
     
-    private Conditions[] getConditionsEitherSide(Location key, ZonedDateTime time) {
+    private Conditions[] getConditionsEitherSide(Location key, LocalDateTime time) {
         Conditions[] conditionsEitherSide = new Conditions[2];
         if (weather.containsKey(key)) {
             for (Conditions conditions : weather.get(key)) {
                 if (conditions.getTime().isBefore(time)) {
                     conditionsEitherSide[0] = conditions;
                 }
-                else if (conditions.getTime().isAfter(time)) {
+                else if (!conditions.getTime().isBefore(time)) {
                     conditionsEitherSide[1] = conditions;
                     break;
                 }

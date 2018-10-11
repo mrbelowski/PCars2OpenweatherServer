@@ -57,6 +57,22 @@ public class Time {
         this.clouds = clouds;
         this.symbol = Symbol.generate(rainNumber, visibility, this.clouds.getAll());
     }
+    
+    public Time(String from, String to, ForecastPrecipitation precipitation, WindDirection windDirection,
+            WindSpeed windSpeed, ForecastTemperature temperature, ForecastPressure pressure, Humidity humidity, ForecastClouds clouds,
+            Symbol symbol) {
+        super();
+        this.from = from;
+        this.to = to;
+        this.precipitation = precipitation;
+        this.windDirection = windDirection;
+        this.windSpeed = windSpeed;
+        this.temperature = temperature;
+        this.pressure = pressure;
+        this.humidity = humidity;
+        this.clouds = clouds;
+        this.symbol = symbol;
+    }
 
     @XmlAttribute
     public String getFrom() {
@@ -146,6 +162,11 @@ public class Time {
 
     public void setClouds(ForecastClouds clouds) {
         this.clouds = clouds;
+    }
+    
+    public Time cloneToNewPeriod(String from, String to) {
+        return new Time(from, to, this.precipitation, this.windDirection, this.windSpeed, 
+                this.temperature, this.pressure, this.humidity, this.clouds, this.symbol);
     }
 
     @Override

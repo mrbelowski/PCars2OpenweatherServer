@@ -1,7 +1,6 @@
 package org.belowski.weather.model.current;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -52,7 +51,7 @@ public class Current {
         this.humidity = humidity;
         this.clouds = clouds;
         this.lastUpdate = new LastUpdate();
-        this.lastUpdate.setValue(ZonedDateTime.now(ZoneOffset.UTC).format(WeatherServiceImpl.DTF));
+        this.lastUpdate.setValue(LocalDateTime.now().format(WeatherServiceImpl.DTF));
         this.visibility = visibility;
         this.weather = weather;
     }

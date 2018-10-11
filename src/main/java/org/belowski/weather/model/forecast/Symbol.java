@@ -67,4 +67,9 @@ public class Symbol {
     public ConditionType getConditionType() {
         return conditionType;
     }
+
+    @Override
+    public String toString() {
+        return "Symbol [conditionType=" + conditionType + ", number=" + number + "]";
+    }
 }

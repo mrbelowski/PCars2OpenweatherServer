@@ -1,6 +1,6 @@
 package org.belowski.weather.model.setup;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import org.belowski.weather.model.forecast.Symbol;
 
@@ -12,7 +12,7 @@ import org.belowski.weather.model.forecast.Symbol;
  */
 public class Conditions {
 
-    private ZonedDateTime time;
+    private LocalDateTime time;
     
     private float temperature;
     
@@ -37,7 +37,7 @@ public class Conditions {
         super();
     }
     
-    public Conditions(ZonedDateTime time, float temperature, float windSpeed, int windDirection, int clouds, int humidity, int visibility, int pressure, Symbol symbol) {
+    public Conditions(LocalDateTime time, float temperature, float windSpeed, int windDirection, int clouds, int humidity, int visibility, int pressure, float rain, Symbol symbol) {
         super();
         this.time = time;
         this.temperature = temperature;
@@ -47,10 +47,11 @@ public class Conditions {
         this.humidity = humidity;
         this.visibility = visibility;
         this.pressure = pressure;
+        this.precipitation = rain;
         this.symbol = symbol;
     }
 
-    public Conditions(ZonedDateTime time, float temperature, float precipitation, float pressure, int humidity,
+    public Conditions(LocalDateTime time, float temperature, float precipitation, float pressure, int humidity,
             int clouds, float windSpeed, int windDirection, int visibility) {
         super();
         this.time = time;
@@ -64,11 +65,11 @@ public class Conditions {
         this.visibility = visibility;
     }
 
-    public ZonedDateTime getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(ZonedDateTime time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 
@@ -144,13 +145,13 @@ public class Conditions {
         this.symbol = symbol;
     }
 
-    public Conditions cloneForTime(ZonedDateTime start) {
+    public Conditions cloneForTime(LocalDateTime start) {
         return new Conditions(start, this.temperature, this.precipitation, this.pressure, this.humidity, this.clouds, this.windSpeed, this.windDirection, this.visibility);
     }
 
     @Override
     public String toString() {
-        return "Conditions [time=" + time + ", temperature=" + temperature + ", precipitation=" + precipitation
+        return "Conditions [time=" + time + ", symbol " + symbol + ", temperature=" + temperature + ", precipitation=" + precipitation
                 + ", pressure=" + pressure + ", humidity=" + humidity + ", clouds=" + clouds + ", windSpeed="
                 + windSpeed + ", windDirection=" + windDirection + ", visibility=" + visibility + "]";
     }

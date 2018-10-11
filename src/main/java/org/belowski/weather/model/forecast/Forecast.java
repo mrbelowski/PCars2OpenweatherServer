@@ -29,7 +29,7 @@ public class Forecast {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Forecast [times=");
+        sb.append("Forecast [times=\n");
         for (Time time : times) {
             sb.append(time.toString()).append("\n");
         }

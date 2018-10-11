@@ -1,6 +1,6 @@
 package org.belowski.weather.repository;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ public interface WeatherRepository {
      * @param time
      * @return
      */
-    WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, ZonedDateTime time);
+    WeatherData getForecast(float latitude, float longitude, int items, int minutesBetweenPoints, LocalDateTime time);
     
     /**
      * Creates and returns a sample.
@@ -30,7 +30,7 @@ public interface WeatherRepository {
      * @param time
      * @return
      */
-    Current getWeather(float latitude, float longitude, ZonedDateTime time);
+    Current getWeather(float latitude, float longitude, LocalDateTime time);
     
     /**
      * 

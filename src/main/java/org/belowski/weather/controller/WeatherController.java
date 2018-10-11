@@ -3,7 +3,7 @@ package org.belowski.weather.controller;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.Instant;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -89,8 +89,8 @@ public class WeatherController {
             LOGGER.info("got current conditions from weather server");            
         } else {            
             current = weatherService.getWeather(latitude, longitude,
-                    time.isPresent() ? ZonedDateTime.ofInstant(Instant.ofEpochMilli(time.get()), ZoneOffset.UTC)
-                            : ZonedDateTime.now(ZoneOffset.UTC));
+                    time.isPresent() ? LocalDateTime.ofInstant(Instant.ofEpochMilli(time.get()), ZoneOffset.systemDefault())
+                            : LocalDateTime.now());
             LOGGER.info("got generated current conditions");
         }
         StringWriter sw = new StringWriter();
@@ -135,8 +135,8 @@ public class WeatherController {
             LOGGER.info("got forecast from weather server");
         } else {
             weatherData = weatherService.getForecast(latitude, longitude, 24, 20,
-                            time.isPresent() ? ZonedDateTime.ofInstant(Instant.ofEpochMilli(time.get()), ZoneOffset.UTC)
-                                    : ZonedDateTime.now(ZoneOffset.UTC));
+                            time.isPresent() ? LocalDateTime.ofInstant(Instant.ofEpochMilli(time.get()), ZoneOffset.systemDefault())
+                                    : LocalDateTime.now());
             LOGGER.info("got generated forecast");
         }
         StringWriter sw = new StringWriter();

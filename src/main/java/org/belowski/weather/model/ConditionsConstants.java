@@ -1,7 +1,7 @@
 package org.belowski.weather.model;
 
 import java.time.Month;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +33,7 @@ public class ConditionsConstants {
     public static final Map<ConditionType, Integer> CONDITION_VISIBILITY_DEFAULTS = new HashMap<>();
     public static final Map<ConditionType, Integer> CONDITION_PRESSURE_DEFAULTS = new HashMap<>();
     public static final Map<ConditionType, Float[]> CONDITION_WIND_DEFAULTS = new HashMap<>();
+    public static final Map<ConditionType, Float> CONDITION_RAIN_DEFAULTS = new HashMap<>();
     public static final Map<ConditionType, Integer> CONDITION_CLOUD_DEFAULTS = new HashMap<>();
     
     private static List<Month> northernHemisphereWinter = Arrays.asList(new Month[] {Month.DECEMBER, Month.JANUARY, Month.FEBRUARY});
@@ -74,6 +75,23 @@ public class ConditionsConstants {
         CONDITION_TEMP_DEFAULTS.put(ConditionType.CLOUD, 22f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.THICK_CLOUD, 18f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.OVERCAST, 12f);
+        
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.THUNDERSTORM, 1f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 0.05f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.DRIZZLE, 0.1f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.HEAVY_DRIZZLE, 0.3f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.LIGHT_RAIN, 0.4f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.RAIN, 0.5f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.HEAVY_RAIN, 0.7f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.VERY_HEAVY_RAIN, 0.9f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.HAZE, 0f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.MIST, 0f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.FOG, 0f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.CLEAR, 0f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.SCATTERED_CLOUD, 0f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.CLOUD, 0f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.THICK_CLOUD, 0f);
+        CONDITION_RAIN_DEFAULTS.put(ConditionType.OVERCAST, 0f);
         
         CONDITION_CLOUD_DEFAULTS.put(ConditionType.THUNDERSTORM, 100);
         CONDITION_CLOUD_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 40);
@@ -163,7 +181,7 @@ public class ConditionsConstants {
     
     private static final Random random = new Random();
     
-    public static PrevailingConditions getPrevailingConditions(float latitude, float longitude, ZonedDateTime time) {
+    public static PrevailingConditions getPrevailingConditions(float latitude, float longitude, LocalDateTime time) {
         Season season = getSeason(latitude, time);
         for (float[] dryPair : dryRegions) {
             if (Math.abs(latitude - dryPair[0]) < 5 && Math.abs(longitude - dryPair[1]) < 5) {
@@ -178,7 +196,7 @@ public class ConditionsConstants {
         return season == Season.SUMMER ? PrevailingConditions.DRY : PrevailingConditions.TEMPERATE;
     }
     
-    public static Season getSeason(float latitude, ZonedDateTime time) {
+    public static Season getSeason(float latitude, LocalDateTime time) {
         if (latitude > 0) {
             if (northernHemisphereWinter.contains(time.getMonth())) {
                 return Season.WINTER;
@@ -213,44 +231,44 @@ public class ConditionsConstants {
         if (rainAmount == 1) {
             return random.nextInt(10) < 9 ? ConditionType.VERY_HEAVY_RAIN : ConditionType.THUNDERSTORM;
         }
-        else if (rainAmount > 0.7) {
+        else if (rainAmount >= 0.7) {
             return ConditionType.HEAVY_RAIN;
         }
-        else if (rainAmount > 0.5) {
+        else if (rainAmount >= 0.5) {
             return ConditionType.RAIN;
         }
-        else if (rainAmount > 0.4) {
+        else if (rainAmount >= 0.4) {
             return ConditionType.LIGHT_RAIN;
         }
-        else if (rainAmount > 0.3) {
+        else if (rainAmount >= 0.3) {
             return ConditionType.HEAVY_DRIZZLE;
         }
-        else if (rainAmount > 0.2) {
+        else if (rainAmount >= 0.2) {
             return ConditionType.DRIZZLE;
         }
-        else if (rainAmount > 0.01) {
+        else if (rainAmount >= 0.01) {
             return ConditionType.LIGHT_DRIZZLE;
         }
-        else if (clouds > 80) {
-            return ConditionType.OVERCAST;
-        }
-        else if (clouds > 60) {
-            return ConditionType.THICK_CLOUD;
-        }
-        else if (clouds > 40) {
-            return ConditionType.CLOUD;
-        }
-        else if (clouds > 20) {
-            return ConditionType.SCATTERED_CLOUD;
-        }
-        else if (visibility < 300) {
+        else if (visibility <= 400) {
             return ConditionType.FOG;
         }
-        else if (visibility < 1000) {
+        else if (visibility <= 1000) {
             return ConditionType.MIST;
-        }
+        }        
         else if (visibility < 4000) {
             return ConditionType.HAZE;
+        }
+        else if (clouds >= 80) {
+            return ConditionType.OVERCAST;
+        }
+        else if (clouds >= 60) {
+            return ConditionType.THICK_CLOUD;
+        }
+        else if (clouds >= 40) {
+            return ConditionType.CLOUD;
+        }
+        else if (clouds >= 20) {
+            return ConditionType.SCATTERED_CLOUD;
         }
         else {
             return ConditionType.CLEAR;

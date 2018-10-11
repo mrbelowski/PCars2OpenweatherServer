@@ -1,12 +1,12 @@
 package org.belowski.weather.model.setup;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 public class LocationWithTime {
 
     private Location location;
     
-    private ZonedDateTime time;    
+    private LocalDateTime time;    
 
     @Override
     public int hashCode() {
@@ -39,7 +39,7 @@ public class LocationWithTime {
         return true;
     }
 
-    public LocationWithTime(Location location, ZonedDateTime time) {
+    public LocationWithTime(Location location, LocalDateTime time) {
         super();
         this.location = location;
         this.time = time;
@@ -53,11 +53,11 @@ public class LocationWithTime {
         this.location = location;
     }
 
-    public ZonedDateTime getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(ZonedDateTime time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
     
