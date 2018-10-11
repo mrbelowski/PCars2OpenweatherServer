@@ -2,7 +2,7 @@
 
 ## Building and running
 
-Build with
+There's a pre-built jar file in the /build folder, or you can build it yourself with
 
 mvn package
 
