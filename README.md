@@ -75,7 +75,7 @@ You can create more specific weather by sending a JSON payload as a POST to
 http://localhost/weather/create/condition
 
 Again, lat and lon are optional parameters and work the same way as for the slots endpoint. The payload (currently...) looks like this:
-(temps are in kelvin, precipitation is 0 [dry] - 1 [monsoon], pressure is in mmHg, humitidy is %, wind speed is in m/s, direction is in degrees and visibility is in metres)
+(temps are in kelvin, precipitation is 0 [dry] - 1 [monsoon], pressure is in mmHg, humidity is %, wind speed is in m/s, direction is in degrees and visibility is in metres)
 
 ```
 {
