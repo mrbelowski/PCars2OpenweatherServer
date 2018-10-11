@@ -1,6 +1,10 @@
 package org.belowski.weather.model;
 
+import java.time.Month;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -13,10 +17,24 @@ public class ConditionsConstants {
         HAZE, MIST, FOG, 
         CLEAR, SCATTERED_CLOUD, CLOUD, THICK_CLOUD, OVERCAST
     }
+    
+    public enum PrevailingConditions {DESERT, DRY, TEMPERATE, WET};
+    
+    public enum Season {WINTER, SPRING, SUMMER, AUTUMN}
+    
+    // lat / lon pairs for the centre of regions considered 'dry'
+    private static float[][] dryRegions = {new float[] {37, -120}, new float[] {30, -102}, new float[] {23, 37}, new float[] {23, 47}};    // dry US regions + the Gulf
+    // lat / lon pairs for the centre of regions considered 'wet'
+    private static float[][] wetRegions = {new float[] {55, 7}, new float[] {37, 147}};    // just UK and Japan for now
 
     public static final Map<ConditionType, Integer> CONDITION_IDS = new HashMap<>();
     public static final Map<ConditionType, Float> CONDITION_TEMP_DEFAULTS = new HashMap<>();
     public static final Map<ConditionType, Float[]> CONDITION_WIND_DEFAULTS = new HashMap<>();
+    
+    private static List<Month> northernHemisphereWinter = Arrays.asList(new Month[] {Month.DECEMBER, Month.JANUARY, Month.FEBRUARY});
+    private static List<Month> northernHemisphereSpring = Arrays.asList(new Month[] {Month.MARCH, Month.APRIL, Month.MAY});
+    private static List<Month> northernHemisphereSummer = Arrays.asList(new Month[] {Month.JUNE, Month.JULY, Month.AUGUST});
+    private static List<Month> northernHemisphereAutumn = Arrays.asList(new Month[] {Month.SEPTEMBER, Month.OCTOBER, Month.NOVEMBER});
     
     static {
         CONDITION_IDS.put(ConditionType.THUNDERSTORM, 202);
@@ -35,9 +53,7 @@ public class ConditionsConstants {
         CONDITION_IDS.put(ConditionType.CLOUD, 802);
         CONDITION_IDS.put(ConditionType.THICK_CLOUD, 803);
         CONDITION_IDS.put(ConditionType.OVERCAST, 804);
-    }
-    
-    static {
+
         CONDITION_TEMP_DEFAULTS.put(ConditionType.THUNDERSTORM, 10f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 25f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.DRIZZLE, 23f);
@@ -54,9 +70,7 @@ public class ConditionsConstants {
         CONDITION_TEMP_DEFAULTS.put(ConditionType.CLOUD, 22f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.THICK_CLOUD, 18f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.OVERCAST, 12f);
-    }
-    
-    static {
+
         CONDITION_WIND_DEFAULTS.put(ConditionType.THUNDERSTORM, new Float[] {15f, 30f});
         CONDITION_WIND_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, new Float[] {0f, 10f});
         CONDITION_WIND_DEFAULTS.put(ConditionType.DRIZZLE, new Float[] {0f, 10f});
@@ -76,6 +90,52 @@ public class ConditionsConstants {
     }
     
     private static final Random random = new Random();
+    
+    public static PrevailingConditions getPrevailingConditions(float latitude, float longitude, ZonedDateTime time) {
+        Season season = getSeason(latitude, time);
+        for (float[] dryPair : dryRegions) {
+            if (Math.abs(latitude - dryPair[0]) < 5 && Math.abs(longitude - dryPair[1]) < 5) {
+                return season == Season.WINTER ? PrevailingConditions.DRY : PrevailingConditions.DESERT;
+            }
+        }
+        for (float[] wetPair : wetRegions) {
+            if (Math.abs(latitude - wetPair[0]) < 5 && Math.abs(longitude - wetPair[1]) < 5) {
+                return season == Season.SUMMER ? PrevailingConditions.TEMPERATE : PrevailingConditions.WET;
+            }
+        }
+        return season == Season.SUMMER ? PrevailingConditions.DRY : PrevailingConditions.TEMPERATE;
+    }
+    
+    public static Season getSeason(float latitude, ZonedDateTime time) {
+        if (latitude > 0) {
+            if (northernHemisphereWinter.contains(time.getMonth())) {
+                return Season.WINTER;
+            }
+            else if (northernHemisphereSpring.contains(time.getMonth())) {
+                return Season.SPRING;
+            }
+            else if (northernHemisphereSummer.contains(time.getMonth())) {
+                return Season.SUMMER;
+            }
+            else {
+                return Season.AUTUMN;
+            }
+        }
+        else {
+            if (northernHemisphereSummer.contains(time.getMonth())) {
+                return Season.WINTER;
+            }
+            else if (northernHemisphereAutumn.contains(time.getMonth())) {
+                return Season.SPRING;
+            }
+            else if (northernHemisphereWinter.contains(time.getMonth())) {
+                return Season.SUMMER;
+            }
+            else {
+                return Season.AUTUMN;
+            }
+        }
+    }
     
     public static ConditionType getConditionType(float rainAmount, int visibility, int clouds) {
         if (rainAmount == 1) {

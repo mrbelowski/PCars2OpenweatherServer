@@ -1,6 +1,5 @@
 package org.belowski.weather.repository;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
@@ -137,7 +136,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 key = ANY_LOCATION;
             }
             else {
-                createWeather(key, time, null);
+                createWeather(key, time, ConditionsConstants.getPrevailingConditions(latitude, longitude, time), null);
             }
         }
         // forecast data every minutesBetweenPoints
@@ -168,13 +167,13 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 key = ANY_LOCATION;
             }
             else {
-                createWeather(key, time, null);
+                createWeather(key, time, ConditionsConstants.getPrevailingConditions(latitude, longitude, time), null);
             }
         }
         Conditions[] conditionsEitherSide = getConditionsEitherSide(key, time);
         if (conditionsEitherSide[0] == null) {
             // we have no weather data so we need to create some
-            createWeather(key, time, conditionsEitherSide[1]);
+            createWeather(key, time, ConditionsConstants.getPrevailingConditions(latitude, longitude, time), conditionsEitherSide[1]);
             conditionsEitherSide = getConditionsEitherSide(key, time);
         }
         else if (conditionsEitherSide[0].getSymbol() != null) {
@@ -253,7 +252,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         return (rainNumber - 0.5f) * 60;
     }
 
-    private void createWeather(Location location, ZonedDateTime start, Conditions initialConditions) {
+    private void createWeather(Location location, ZonedDateTime start, ConditionsConstants.PrevailingConditions prevailingConditions, Conditions initialConditions) {
+        LOGGER.info("Creating weather with prevailing conditions " + prevailingConditions);
         List<Conditions> generatedConditions = new ArrayList<>();
         // create 24 hours (?) of weather from start - 1 hour
         ZonedDateTime sampleTime = start.minusHours(1);
@@ -267,7 +267,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         ChangeType changeType = random.nextInt(2) == 0 ? ChangeType.IMPROVING : ChangeType.WORSENING;
         for (int i=0; i<hoursToCreate * samplesPerHour; i++) {
             sampleTime = sampleTime.plusMinutes(10);
-            Conditions theseConditions = createNewConditions(sampleTime, previousPreviousConditions, previousConditions, changeType);
+            Conditions theseConditions = createNewConditions(prevailingConditions, sampleTime, previousPreviousConditions, previousConditions, changeType);
             generatedConditions.add(theseConditions);
             previousPreviousConditions = previousConditions;
             previousConditions = theseConditions;
@@ -282,11 +282,29 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         weather.put(location, generatedConditions);
     }
     
-    private Conditions createNewConditions(ZonedDateTime time, Conditions previousPreviousConditions, Conditions previousConditions, ChangeType changeType) {
+    private Conditions createNewConditions(ConditionsConstants.PrevailingConditions prevailingConditions,
+            ZonedDateTime time, Conditions previousPreviousConditions, Conditions previousConditions, ChangeType changeType) {
+        
+        // scale the rain likelihood - make it very rare for dry places, twice as common for wet places
+        float rainLikelihoodScale;
+        switch (prevailingConditions) {
+            case DESERT:
+                rainLikelihoodScale = 0.05f;
+                break;
+            case DRY:
+                rainLikelihoodScale = 0.3f;
+                break;
+            case WET:
+                rainLikelihoodScale = 2f;
+                break;
+            default:
+                rainLikelihoodScale = 1;
+                break;
+        }
         if (previousConditions == null) {
             // need to guess some start conditions
             // link rain and humidity here
-            float rain = random.nextFloat() > 0.8 ? random.nextFloat() * maxRain : 0;
+            float rain = random.nextFloat() * rainLikelihoodScale > 0.8 ? random.nextFloat() * maxRain : 0;
             return new Conditions(time, 
                     minTemp + (random.nextFloat() * (maxTemp - minTemp)),
                     rain,
@@ -314,7 +332,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             
             // for any deltas which are zero, allow a small change to happen randomly
             if (deltaRain == 0 && random.nextFloat() > 0.7) {
-                deltaRain = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullRainTransition;
+                deltaRain = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : rainLikelihoodScale) * (float)secondsSincePrevious / (float)secondsForFullRainTransition;
             }
             if (deltaWind == 0 && random.nextFloat() > 0.7) {
                 deltaWind = random.nextFloat() * (changeType == ChangeType.IMPROVING ? -1f : 1f) * (float)secondsSincePrevious / (float)secondsForFullWindTransition;

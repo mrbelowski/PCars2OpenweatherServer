@@ -38,6 +38,16 @@ public class WeatherControllerTest {
     }
     
     @Test
+    public void testGetForecast() throws Exception {
+        MvcResult result = this.mockMvc.perform(get("/data/2.5/forecast").
+                param("lat", "35").
+                param("lon", "-120").
+                param("APPID", "aaaa")).andReturn();
+        String content = result.getResponse().getContentAsString();
+        assertNotNull(content);
+    }
+    
+    @Test
     public void testCreateWeatherConditions() throws Exception {
         String json = new BufferedReader(new InputStreamReader(WeatherControllerTest.class.getResourceAsStream("/createPayload.json"))).lines().collect(Collectors.joining("\n"));
         this.mockMvc.perform(post("/weather/create/conditions").
