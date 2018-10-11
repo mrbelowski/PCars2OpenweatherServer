@@ -9,6 +9,8 @@ server but with a different (working) API key.
 
 ## Building and running
 
+The app is written in Java 8 and should run with any recent JRE.
+
 There's a pre-built uber-jar file (jar with all dependencies) in the /build folder, or you can build it yourself with
 
 ```
