@@ -44,7 +44,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WeatherRepositoryImpl implements WeatherRepository {
     
-    private static final Logger LOGGER = Logger.getLogger(WeatherServiceImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WeatherRepositoryImpl.class.getName());
     
     public static Location ANY_LOCATION = Location.create(9999f, 9999f);
     
@@ -204,7 +204,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 new CurrentClouds(clouds), 
                 new Visibility(visibility),
                 Weather.generate(rain, visibility, clouds));
-        LOGGER.info("got current weather for location " + latitude + "-" + longitude + ": " + sample.toString());
+        LOGGER.info("got current weather for location " + latitude + "," + longitude + ": " + sample.toString());
         return sample;
     }
     
@@ -287,18 +287,23 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         
         // scale the rain likelihood - make it very rare for dry places, twice as common for wet places
         float rainLikelihoodScale;
+        float tempAdjustment;
         switch (prevailingConditions) {
             case DESERT:
                 rainLikelihoodScale = 0.05f;
+                tempAdjustment = 10f;
                 break;
             case DRY:
                 rainLikelihoodScale = 0.3f;
+                tempAdjustment = 2f;
                 break;
             case WET:
                 rainLikelihoodScale = 2f;
+                tempAdjustment = -5f;
                 break;
             default:
-                rainLikelihoodScale = 1;
+                rainLikelihoodScale = 1f;
+                tempAdjustment = 1f;
                 break;
         }
         if (previousConditions == null) {
@@ -306,7 +311,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             // link rain and humidity here
             float rain = random.nextFloat() * rainLikelihoodScale > 0.8 ? random.nextFloat() * maxRain : 0;
             return new Conditions(time, 
-                    minTemp + (random.nextFloat() * (maxTemp - minTemp)),
+                    minTemp + (random.nextFloat() * (maxTemp - minTemp)) + tempAdjustment,
                     rain,
                     minPressure + (random.nextFloat() * (maxPressure - minPressure)),
                     rainToHumidity(rain), 

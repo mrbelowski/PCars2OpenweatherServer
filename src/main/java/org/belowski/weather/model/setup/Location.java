@@ -11,7 +11,7 @@ public class Location {
     public static Location create(float latitude, float longitude) {
         BigDecimal lat = new BigDecimal(latitude);
         BigDecimal roundedLat = lat.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-        BigDecimal lon = new BigDecimal(latitude);
+        BigDecimal lon = new BigDecimal(longitude);
         BigDecimal roundedLong = lon.setScale(2, BigDecimal.ROUND_HALF_EVEN);
         return new Location(roundedLat, roundedLong);
     }
