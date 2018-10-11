@@ -1,4 +1,4 @@
-# PCars21OpenweatherServer
+# PCars2OpenweatherServer
 
 ## Building and running
 
@@ -49,6 +49,7 @@ http://localhost/weather/create/condition
 
 Again, lat and lon are optional parameters and work the same way as for the slots endpoint. The payload (currently...) looks like this:
 (temps are in kelvin, precipitation is 0 [dry] - 1 [monsoon], pressure is in mmHg, humitidy is %, wind speed is in m/s, direction is in degrees and visibility is in metres)
+```
 {
 	"minutesBetweenSamples": 20,
 	"conditions": [{
@@ -98,3 +99,4 @@ Again, lat and lon are optional parameters and work the same way as for the slot
 		"visibility": 1000
 	}]
 }
+```
