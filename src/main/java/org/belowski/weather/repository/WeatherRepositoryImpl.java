@@ -310,7 +310,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 tempAdjustment = 10f;
                 break;
             case DRY:
-                rainLikelihoodScale = 0.3f;
+                rainLikelihoodScale = 0.5f;
                 tempAdjustment = 2f;
                 break;
             case WET:
@@ -325,7 +325,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         if (previousConditions == null) {
             // need to guess some start conditions
             // link rain and humidity here
-            float rain = random.nextFloat() * rainLikelihoodScale > 0.8 ? random.nextFloat() * maxRain : 0;
+            float rain = random.nextFloat() * rainLikelihoodScale > 0.7 ? random.nextFloat() * maxRain : 0;
             return new Conditions(time, 
                     minTemp + (random.nextFloat() * (maxTemp - minTemp)) + tempAdjustment,
                     rain,
