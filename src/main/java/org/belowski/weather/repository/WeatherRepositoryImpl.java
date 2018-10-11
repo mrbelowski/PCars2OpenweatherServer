@@ -79,6 +79,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         for (String slot : slots) {
             ConditionType conditionType = ConditionType.valueOf(slot);
             Float[] windRange = ConditionsConstants.CONDITION_WIND_DEFAULTS.get(conditionType);
+            int clouds = ConditionsConstants.CONDITION_CLOUD_DEFAULTS.get(conditionType);
+            int humidity = ConditionsConstants.CONDITION_HUMIDITY_DEFAULTS.get(conditionType);
+            int visibility = ConditionsConstants.CONDITION_VISIBILITY_DEFAULTS.get(conditionType);
+            int pressure = ConditionsConstants.CONDITION_PRESSURE_DEFAULTS.get(conditionType);
             float newWindSpeed = windRange[0] + random.nextFloat() * (windRange[1] - windRange[0]);
             if (windSpeed == -1) {
                 windSpeed = newWindSpeed;
@@ -91,6 +95,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                     ConditionsConstants.CONDITION_TEMP_DEFAULTS.get(conditionType),
                     windSpeed,
                     windDirection,
+                    clouds,
+                    humidity,
+                    visibility,
+                    pressure,
                     new Symbol(conditionType)));
             sampleTime = sampleTime.plusMinutes(slotLengthMinutes);
         }
@@ -155,7 +163,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             }
         }
         WeatherData forecast = constructForecast(latitude, longitude, minutesBetweenPoints, time, samplesForForecast);
-        LOGGER.info("Got forecast location " + latitude + "-" + longitude + ": "+ forecast.toString());
+        LOGGER.info("Got forecast location " + latitude + ", " + longitude + ": "+ forecast.toString());
         return forecast;
     }
     
@@ -175,10 +183,6 @@ public class WeatherRepositoryImpl implements WeatherRepository {
             // we have no weather data so we need to create some
             createWeather(key, time, ConditionsConstants.getPrevailingConditions(latitude, longitude, time), conditionsEitherSide[1]);
             conditionsEitherSide = getConditionsEitherSide(key, time);
-        }
-        else if (conditionsEitherSide[0].getSymbol() != null) {
-            // just return this
-            return new Current(new Weather(conditionsEitherSide[0].getSymbol().getConditionType()));
         }
         // now we have the conditions either side of the sample, linearly scale each value to create the current weather
         // need to know how close we are to each side here
@@ -211,14 +215,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
     private WeatherData constructForecast(float latitude, float longitude, int minutesBetweenSamples, ZonedDateTime time, List<Conditions> conditions) {
         List<Time> times = new ArrayList<>();
         for (Conditions conditionsSample : conditions) {
-            if (conditionsSample.getSymbol() != null) {
-                times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
-                                   conditionsSample.getTime().withSecond(0).plusMinutes(minutesBetweenSamples).format(WeatherServiceImpl.DTF),
-                                   conditionsSample.getSymbol()));
-                                   
-            }
-            else {
-                times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
+            times.add(new Time(conditionsSample.getTime().withSecond(0).format(WeatherServiceImpl.DTF),
                                conditionsSample.getTime().withSecond(0).plusMinutes(minutesBetweenSamples).format(WeatherServiceImpl.DTF),
                                new org.belowski.weather.model.forecast.ForecastPrecipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
                                new WindDirection(conditionsSample.getWindDirection()), 
@@ -229,7 +226,6 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                                new org.belowski.weather.model.forecast.ForecastClouds(conditionsSample.getClouds(), "%"),
                                conditionsSample.getPrecipitation(),
                                conditionsSample.getVisibility()));
-            }
         }
         return new WeatherData(new Sun(getSunrise(time), getSunset(time)), 
                 new LocationWrapper(new org.belowski.weather.model.forecast.Location(latitude, longitude)), new Forecast(times));

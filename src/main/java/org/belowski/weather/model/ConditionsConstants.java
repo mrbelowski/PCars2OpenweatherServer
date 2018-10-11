@@ -29,7 +29,11 @@ public class ConditionsConstants {
 
     public static final Map<ConditionType, Integer> CONDITION_IDS = new HashMap<>();
     public static final Map<ConditionType, Float> CONDITION_TEMP_DEFAULTS = new HashMap<>();
+    public static final Map<ConditionType, Integer> CONDITION_HUMIDITY_DEFAULTS = new HashMap<>();
+    public static final Map<ConditionType, Integer> CONDITION_VISIBILITY_DEFAULTS = new HashMap<>();
+    public static final Map<ConditionType, Integer> CONDITION_PRESSURE_DEFAULTS = new HashMap<>();
     public static final Map<ConditionType, Float[]> CONDITION_WIND_DEFAULTS = new HashMap<>();
+    public static final Map<ConditionType, Integer> CONDITION_CLOUD_DEFAULTS = new HashMap<>();
     
     private static List<Month> northernHemisphereWinter = Arrays.asList(new Month[] {Month.DECEMBER, Month.JANUARY, Month.FEBRUARY});
     private static List<Month> northernHemisphereSpring = Arrays.asList(new Month[] {Month.MARCH, Month.APRIL, Month.MAY});
@@ -70,6 +74,74 @@ public class ConditionsConstants {
         CONDITION_TEMP_DEFAULTS.put(ConditionType.CLOUD, 22f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.THICK_CLOUD, 18f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.OVERCAST, 12f);
+        
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.THUNDERSTORM, 100);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 40);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.DRIZZLE, 50);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.HEAVY_DRIZZLE, 60);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.LIGHT_RAIN, 80);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.RAIN, 100);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.HEAVY_RAIN, 100);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.VERY_HEAVY_RAIN, 100);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.HAZE, 20);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.MIST, 50);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.FOG, 100);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.CLEAR, 0);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.SCATTERED_CLOUD, 10);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.CLOUD, 20);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.THICK_CLOUD, 50);
+        CONDITION_CLOUD_DEFAULTS.put(ConditionType.OVERCAST, 100);
+        
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.THUNDERSTORM, 970);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 995);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.DRIZZLE, 993);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.HEAVY_DRIZZLE, 990);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.LIGHT_RAIN, 987);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.RAIN, 985);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.HEAVY_RAIN, 980);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.VERY_HEAVY_RAIN, 975);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.HAZE, 1005);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.MIST, 1000);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.FOG, 1000);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.CLEAR, 1020);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.SCATTERED_CLOUD, 1010);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.CLOUD, 1005);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.THICK_CLOUD, 990);
+        CONDITION_PRESSURE_DEFAULTS.put(ConditionType.OVERCAST, 990);
+        
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.THUNDERSTORM, 100);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 50);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.DRIZZLE, 60);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.HEAVY_DRIZZLE, 70);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.LIGHT_RAIN, 80);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.RAIN, 100);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.HEAVY_RAIN, 100);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.VERY_HEAVY_RAIN, 100);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.HAZE, 50);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.MIST, 70);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.FOG, 100);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.CLEAR, 0);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.SCATTERED_CLOUD, 10);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.CLOUD, 40);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.THICK_CLOUD, 70);
+        CONDITION_HUMIDITY_DEFAULTS.put(ConditionType.OVERCAST, 80);
+        
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.THUNDERSTORM, 500);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 6000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.DRIZZLE, 4000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.HEAVY_DRIZZLE, 3500);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.LIGHT_RAIN, 3000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.RAIN, 2000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.HEAVY_RAIN, 1000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.VERY_HEAVY_RAIN, 500);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.HAZE, 2000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.MIST, 1000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.FOG, 300);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.CLEAR, 20000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.SCATTERED_CLOUD, 10000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.CLOUD, 8000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.THICK_CLOUD, 6000);
+        CONDITION_VISIBILITY_DEFAULTS.put(ConditionType.OVERCAST, 6000);
 
         CONDITION_WIND_DEFAULTS.put(ConditionType.THUNDERSTORM, new Float[] {15f, 30f});
         CONDITION_WIND_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, new Float[] {0f, 10f});

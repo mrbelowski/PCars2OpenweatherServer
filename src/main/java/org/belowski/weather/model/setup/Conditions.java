@@ -37,12 +37,16 @@ public class Conditions {
         super();
     }
     
-    public Conditions(ZonedDateTime time, float temperature, float windSpeed, int windDirection, Symbol symbol) {
+    public Conditions(ZonedDateTime time, float temperature, float windSpeed, int windDirection, int clouds, int humidity, int visibility, int pressure, Symbol symbol) {
         super();
         this.time = time;
         this.temperature = temperature;
         this.windSpeed = windSpeed;
         this.windDirection = windDirection;
+        this.clouds = clouds;
+        this.humidity = humidity;
+        this.visibility = visibility;
+        this.pressure = pressure;
         this.symbol = symbol;
     }
 

@@ -11,7 +11,6 @@ import org.belowski.weather.model.setup.Conditions;
 import org.belowski.weather.repository.WeatherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class WeatherServiceImpl implements WeatherService {
