@@ -48,7 +48,8 @@ http://localhost/weather/create/slots?slotLength=20&slot=RAIN&slot=LIGHT_RAIN&sl
 
 slotLength is in minutes, slot can be one of:
 ```CLEAR, SCATTERED_CLOUD, CLOUD, THICK_CLOUD, OVERCAST, LIGHT_DRIZZLE, DRIZZLE, HEAVY_DRIZZLE,
-LIGHT_RAIN, RAIN, HEAVY_RAIN, VERY_HEAVY_RAIN, THUNDERSTORM, HAZE, MIST, FOG```
+LIGHT_RAIN, RAIN, HEAVY_RAIN, VERY_HEAVY_RAIN, THUNDERSTORM, HAZE, MIST, FOG
+```
 The app will scale temperature and wind according to the slot type.
 
 This will create the sequence of weather that will apply to every location. If you want to create weather for a specific location only, specify
