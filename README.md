@@ -47,8 +47,8 @@ You can create your own conditions by invoking the endpoint (as a GET request - 
 http://localhost/weather/create/slots?slotLength=20&slot=RAIN&slot=LIGHT_RAIN&slot=OVERCAST etc etc
 
 slotLength is in minutes, slot can be one of:
-```CLEAR, SCATTERED_CLOUD, CLOUD, THICK_CLOUD, OVERCAST, LIGHT_DRIZZLE, DRIZZLE, HEAVY_DRIZZLE,
-LIGHT_RAIN, RAIN, HEAVY_RAIN, VERY_HEAVY_RAIN, THUNDERSTORM, HAZE, MIST, FOG
+```
+CLEAR, SCATTERED_CLOUD, CLOUD, THICK_CLOUD, OVERCAST, LIGHT_DRIZZLE, DRIZZLE, HEAVY_DRIZZLE, LIGHT_RAIN, RAIN, HEAVY_RAIN, VERY_HEAVY_RAIN, THUNDERSTORM, HAZE, MIST, FOG
 ```
 The app will scale temperature and wind according to the slot type.
 
