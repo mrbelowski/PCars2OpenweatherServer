@@ -116,7 +116,7 @@ public class WeatherController {
     public ResponseEntity<Void> createWeatherFromSlots(
             @RequestParam(name = "lat") Optional<Float> latitude,
             @RequestParam(name = "lon") Optional<Float> longitude,
-            @RequestParam(name = "slotLength") int slotLengthMinutes,
+            @RequestParam(name = "slotLength") Optional<Integer> slotLengthMinutes,
             @RequestParam(name = "slot") List<String> slots) {
         weatherService.createWeatherFromSlots(latitude, longitude, slotLengthMinutes, slots);
         return new ResponseEntity<Void>(HttpStatus.OK);
@@ -125,7 +125,9 @@ public class WeatherController {
     @RequestMapping(path = "/data/2.5/forecast", produces = "application/xml; charset=utf-8", consumes = "*/*")
     public @ResponseBody ResponseEntity<String> getForecast(@RequestParam(name = "lat") float latitude,
             @RequestParam(name = "lon") float longitude, @RequestParam(name = "APPID") String originalAppId,
-            @RequestParam(name = "time") Optional<Long> time) throws IOException {
+            @RequestParam(name = "time") Optional<Long> time,
+            @RequestParam(name = "sampleCount") Optional<Integer> items,
+            @RequestParam(name = "sampleLength") Optional<Integer> sampleLength) throws IOException {
         WeatherData weatherData;
         if (proxyEnabled) {
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(proxyUrl + "/data/2.5/forecast")
@@ -134,7 +136,7 @@ public class WeatherController {
             weatherData = proxyTemplate.getForEntity(builder.toUriString(), WeatherData.class).getBody();
             LOGGER.info("got forecast from weather server");
         } else {
-            weatherData = weatherService.getForecast(latitude, longitude, 24, 20,
+            weatherData = weatherService.getForecast(latitude, longitude, items.orElse(8), sampleLength.orElse(180),
                             time.isPresent() ? LocalDateTime.ofInstant(Instant.ofEpochMilli(time.get()), ZoneOffset.systemDefault())
                                     : LocalDateTime.now());
             LOGGER.info("got generated forecast");

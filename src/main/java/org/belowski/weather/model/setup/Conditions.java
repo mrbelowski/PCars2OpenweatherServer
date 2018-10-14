@@ -18,7 +18,7 @@ public class Conditions {
     
     private float precipitation;
     
-    private float pressure;
+    private int pressure;
     
     private int humidity;
     
@@ -51,20 +51,6 @@ public class Conditions {
         this.symbol = symbol;
     }
 
-    public Conditions(LocalDateTime time, float temperature, float precipitation, float pressure, int humidity,
-            int clouds, float windSpeed, int windDirection, int visibility) {
-        super();
-        this.time = time;
-        this.temperature = temperature;
-        this.precipitation = precipitation;
-        this.pressure = pressure;
-        this.humidity = humidity;
-        this.clouds = clouds;
-        this.windSpeed = windSpeed;
-        this.windDirection = windDirection;
-        this.visibility = visibility;
-    }
-
     public LocalDateTime getTime() {
         return time;
     }
@@ -89,11 +75,11 @@ public class Conditions {
         this.precipitation = precipitation;
     }
 
-    public float getPressure() {
+    public int getPressure() {
         return pressure;
     }
 
-    public void setPressure(float pressure) {
+    public void setPressure(int pressure) {
         this.pressure = pressure;
     }
 
@@ -146,7 +132,7 @@ public class Conditions {
     }
 
     public Conditions cloneForTime(LocalDateTime start) {
-        return new Conditions(start, this.temperature, this.precipitation, this.pressure, this.humidity, this.clouds, this.windSpeed, this.windDirection, this.visibility);
+        return new Conditions(time, temperature, windSpeed, windDirection, clouds, humidity, visibility, pressure, precipitation, symbol);
     }
 
     @Override

@@ -47,5 +47,5 @@ public interface WeatherRepository {
      * @param slotLengthMinutes
      * @param slots
      */
-    void createWeatherFromSlots(Optional<Float> latitude, Optional<Float> longitude, int slotLengthMinutes, List<String> slots);
+    void createWeatherFromSlots(Optional<Float> latitude, Optional<Float> longitude, Optional<Integer> slotLengthMinutes, List<String> slots);
 }

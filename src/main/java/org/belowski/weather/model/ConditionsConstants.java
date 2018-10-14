@@ -184,12 +184,12 @@ public class ConditionsConstants {
     public static PrevailingConditions getPrevailingConditions(float latitude, float longitude, LocalDateTime time) {
         Season season = getSeason(latitude, time);
         for (float[] dryPair : dryRegions) {
-            if (Math.abs(latitude - dryPair[0]) < 5 && Math.abs(longitude - dryPair[1]) < 5) {
+            if (Math.abs(latitude - dryPair[0]) < 8 && Math.abs(longitude - dryPair[1]) < 8) {
                 return season == Season.WINTER ? PrevailingConditions.DRY : PrevailingConditions.DESERT;
             }
         }
         for (float[] wetPair : wetRegions) {
-            if (Math.abs(latitude - wetPair[0]) < 5 && Math.abs(longitude - wetPair[1]) < 5) {
+            if (Math.abs(latitude - wetPair[0]) < 8 && Math.abs(longitude - wetPair[1]) < 8) {
                 return season == Season.SUMMER ? PrevailingConditions.TEMPERATE : PrevailingConditions.WET;
             }
         }
