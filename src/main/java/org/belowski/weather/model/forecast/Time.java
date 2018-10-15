@@ -44,7 +44,7 @@ public class Time {
     
     public Time(String from, String to, ForecastPrecipitation precipitation, WindDirection windDirection,
             WindSpeed windSpeed, ForecastTemperature temperature, ForecastPressure pressure, Humidity humidity, ForecastClouds clouds,
-            float rainNumber, int visibility) {
+            float rainNumber, int visibility, boolean isDay) {
         super();
         this.from = from;
         this.to = to;
@@ -55,7 +55,7 @@ public class Time {
         this.pressure = pressure;
         this.humidity = humidity;
         this.clouds = clouds;
-        this.symbol = Symbol.generate(rainNumber, visibility, this.clouds.getAll());
+        this.symbol = Symbol.generate(rainNumber, visibility, this.clouds.getAll(), isDay);
     }
     
     public Time(String from, String to, ForecastPrecipitation precipitation, WindDirection windDirection,

@@ -17,6 +17,7 @@ import org.belowski.weather.model.setup.CreateConditions;
 import org.belowski.weather.service.WeatherService;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,18 +48,22 @@ public class WeatherController {
 
     private String proxyUserAppId;
 
-    private Marshaller marshaller;
+    private Marshaller responseMarshaller;
+    
+    private Marshaller debugMarshaller;
     
     public WeatherController(@Autowired WeatherService weatherService,
                              @Autowired RestTemplate proxyTemplate,
-                             @Autowired Marshaller marshaller,
+                             @Autowired @Qualifier("ResponseMarshaller") Marshaller responseMarshaller,
+                             @Autowired @Qualifier("DebugMarshaller") Marshaller debugMarshaller,
                              @Value("${weather.proxy.enabled}") boolean proxyEnabled,
                              @Value("${weather.proxy.url}") String proxyUrl,
                              @Value("${weather.proxy.user.appId:NOT SET}") String proxyUserAppId) {
         super();
         this.weatherService = weatherService;
         this.proxyTemplate = proxyTemplate;
-        this.marshaller = marshaller;
+        this.responseMarshaller = responseMarshaller;
+        this.debugMarshaller = debugMarshaller;
         this.proxyEnabled = proxyEnabled;
         this.proxyUrl = proxyUrl;
         this.proxyUserAppId = proxyUserAppId;
@@ -93,12 +98,9 @@ public class WeatherController {
                             : LocalDateTime.now());
             LOGGER.info("got generated current conditions");
         }
-        StringWriter sw = new StringWriter();
-        Result result = new StreamResult(sw);
-        marshaller.marshal(current, result);
-        String response = postProcessXML(sw.toString());
-        LOGGER.info(response);
-        return new ResponseEntity<String>(response,
+        String[] responseAndDebug = getResponseAndDebug(current);
+        LOGGER.info(responseAndDebug[1]);
+        return new ResponseEntity<String>(responseAndDebug[0],
                     createHeaders("/data/2.5/weather", originalAppId, latitude, longitude), HttpStatus.OK);
     }
 
@@ -141,12 +143,9 @@ public class WeatherController {
                                     : LocalDateTime.now());
             LOGGER.info("got generated forecast");
         }
-        StringWriter sw = new StringWriter();
-        Result result = new StreamResult(sw);
-        marshaller.marshal(weatherData, result);
-        String response = postProcessXML(sw.toString());
-        LOGGER.info(response);
-        return new ResponseEntity<String>(response,
+        String[] responseAndDebug = getResponseAndDebug(weatherData);
+        LOGGER.info(responseAndDebug[1]);
+        return new ResponseEntity<String>(responseAndDebug[0],
                 createHeaders("/data/2.5/forecast", originalAppId, latitude, longitude), HttpStatus.OK);
     }
     
@@ -176,5 +175,15 @@ public class WeatherController {
         headers.add("Access-Control-Allow-Methods", "GET, POST");
         headers.add("Connection", "keep-alive");
         return headers;
+    }
+    
+    private String[] getResponseAndDebug(Object data) throws IOException {
+        StringWriter responseSW = new StringWriter();
+        Result responseResult = new StreamResult(responseSW);
+        responseMarshaller.marshal(data, responseResult);
+        StringWriter debugSW = new StringWriter();
+        Result debugResult = new StreamResult(debugSW);
+        debugMarshaller.marshal(data, debugResult);
+        return new String[] {postProcessXML(responseSW.toString()), postProcessXML(debugSW.toString())};
     }
 }

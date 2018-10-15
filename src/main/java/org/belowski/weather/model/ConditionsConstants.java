@@ -11,11 +11,44 @@ import java.util.Random;
 public class ConditionsConstants {
     
     public enum ConditionType {
-        THUNDERSTORM,
-        LIGHT_DRIZZLE, DRIZZLE, HEAVY_DRIZZLE,
-        LIGHT_RAIN, RAIN, HEAVY_RAIN, VERY_HEAVY_RAIN,
-        HAZE, MIST, FOG, 
-        CLEAR, SCATTERED_CLOUD, CLOUD, THICK_CLOUD, OVERCAST
+        THUNDERSTORM(202, "thunderstorm with heavy rain", "11"),
+        LIGHT_DRIZZLE(300, "light intensity drizzle", "09"), 
+        DRIZZLE(301, "drizzle", "09"), 
+        HEAVY_DRIZZLE(302, "heavy intensity drizzle", "09"),
+        LIGHT_RAIN(500, "light rain", "10"),
+        RAIN(501, "moderate rain", "10"), 
+        HEAVY_RAIN(502, "heavy intensity rain", "10"),
+        VERY_HEAVY_RAIN(503, "very heavy rain", "10"),
+        HAZE(721, "haze", "50"), 
+        MIST(701, "mist", "50"), 
+        FOG(741, "fog", "50"), 
+        CLEAR(800, "clear sky", "01"), 
+        SCATTERED_CLOUD(801, "few clouds", "02"),
+        CLOUD(802, "scattered clouds", "03"), 
+        THICK_CLOUD(803, "broken clouds", "04"),
+        OVERCAST(804, "overcast clouds", "04");
+        
+        private int id;
+        private String description;
+        private String symbol;
+        
+        private ConditionType(int id, String description, String symbol) {
+            this.id = id;
+            this.description = description;
+            this.symbol = symbol;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getSymbol(boolean day) {
+            return symbol + (day ? "d" : "n");
+        }
     }
     
     public enum PrevailingConditions {DESERT, DRY, TEMPERATE, WET};
@@ -27,7 +60,6 @@ public class ConditionsConstants {
     // lat / lon pairs for the centre of regions considered 'wet'
     private static float[][] wetRegions = {new float[] {55, 7}, new float[] {37, 147}};    // just UK and Japan for now
 
-    public static final Map<ConditionType, Integer> CONDITION_IDS = new HashMap<>();
     public static final Map<ConditionType, Float> CONDITION_TEMP_DEFAULTS = new HashMap<>();
     public static final Map<ConditionType, Integer> CONDITION_HUMIDITY_DEFAULTS = new HashMap<>();
     public static final Map<ConditionType, Integer> CONDITION_VISIBILITY_DEFAULTS = new HashMap<>();
@@ -42,22 +74,6 @@ public class ConditionsConstants {
     private static List<Month> northernHemisphereAutumn = Arrays.asList(new Month[] {Month.SEPTEMBER, Month.OCTOBER, Month.NOVEMBER});
     
     static {
-        CONDITION_IDS.put(ConditionType.THUNDERSTORM, 202);
-        CONDITION_IDS.put(ConditionType.LIGHT_DRIZZLE, 300);
-        CONDITION_IDS.put(ConditionType.DRIZZLE, 301);
-        CONDITION_IDS.put(ConditionType.HEAVY_DRIZZLE, 302);
-        CONDITION_IDS.put(ConditionType.LIGHT_RAIN, 500);
-        CONDITION_IDS.put(ConditionType.RAIN, 501);
-        CONDITION_IDS.put(ConditionType.HEAVY_RAIN, 502);
-        CONDITION_IDS.put(ConditionType.VERY_HEAVY_RAIN, 503);
-        CONDITION_IDS.put(ConditionType.HAZE, 721);
-        CONDITION_IDS.put(ConditionType.MIST, 701);
-        CONDITION_IDS.put(ConditionType.FOG, 741);
-        CONDITION_IDS.put(ConditionType.CLEAR, 800);
-        CONDITION_IDS.put(ConditionType.SCATTERED_CLOUD, 801);
-        CONDITION_IDS.put(ConditionType.CLOUD, 802);
-        CONDITION_IDS.put(ConditionType.THICK_CLOUD, 803);
-        CONDITION_IDS.put(ConditionType.OVERCAST, 804);
 
         CONDITION_TEMP_DEFAULTS.put(ConditionType.THUNDERSTORM, 10f);
         CONDITION_TEMP_DEFAULTS.put(ConditionType.LIGHT_DRIZZLE, 25f);

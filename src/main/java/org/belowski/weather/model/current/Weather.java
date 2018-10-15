@@ -1,5 +1,7 @@
 package org.belowski.weather.model.current;
 
+import java.time.LocalDateTime;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
@@ -17,22 +19,17 @@ public class Weather {
     
     private String icon;
     
-    public static Weather generate(float rainAmount, int visibility, int clouds) {
-        return new Weather(ConditionsConstants.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
+    public static Weather generate(float rainAmount, int visibility, int clouds, LocalDateTime time) {
+        ConditionType type = ConditionsConstants.getConditionType(rainAmount, visibility, clouds);
+        return new Weather(type, time.getHour() >= 6 && time.getHour() <= 18); 
     }
     
-    public Weather(ConditionType conditionType) {
+    public Weather(ConditionType conditionType, boolean isDay) {
         super();
         this.conditionType = conditionType;
-        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
-    }
-    
-    private Weather(ConditionType conditionType, String value, String icon) {
-        super();
-        this.conditionType = conditionType;
-        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
-        this.value = value;
-        this.icon = icon;
+        this.number = conditionType.getId();
+        this.value = conditionType.getDescription();
+        this.icon = conditionType.getSymbol(isDay);
     }
 
     public Weather() {

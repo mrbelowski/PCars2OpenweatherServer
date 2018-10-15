@@ -15,28 +15,23 @@ public class Symbol {
 
     private String var;
     
-    public static Symbol generate(float rainAmount, int visibility, int clouds) {
-        return new Symbol(ConditionsConstants.getConditionType(rainAmount, visibility, clouds), "auto generated", "01d"); 
+    public static Symbol generate(float rainAmount, int visibility, int clouds, boolean isDay) {
+        ConditionType type = ConditionsConstants.getConditionType(rainAmount, visibility, clouds);
+        return new Symbol(type, isDay); 
     }
 
     public Symbol() {
         super();
     }
 
-    public Symbol(ConditionType conditionType) {
+    public Symbol(ConditionType conditionType, boolean isDay) {
         super();
         this.conditionType = conditionType;
-        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
+        this.number = conditionType.getId();
+        this.name = conditionType.getDescription();
+        this.var = conditionType.getSymbol(isDay);
     }
     
-    private Symbol(ConditionType conditionType, String name, String var) {
-        super();
-        this.conditionType = conditionType;
-        this.number = ConditionsConstants.CONDITION_IDS.get(conditionType);
-        this.name = name;
-        this.var = var;
-    }
-
     @XmlAttribute
     public int getNumber() {
         return number;

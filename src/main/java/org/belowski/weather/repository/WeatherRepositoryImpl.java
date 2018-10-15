@@ -114,7 +114,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                     visibility,
                     pressure,
                     rain,
-                    new Symbol(conditionType)));
+                    new Symbol(conditionType, sampleTime.getHour() >= 6 && sampleTime.getHour() <= 18)));
             sampleTime = sampleTime.plusMinutes(interval);
         }
         Location key;
@@ -260,7 +260,7 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                 new Humidity((int) humidity, "%"),
                 new CurrentClouds(clouds), 
                 new Visibility(visibility),
-                Weather.generate(rain, visibility, clouds));
+                Weather.generate(rain, visibility, clouds, conditionsEitherSide[1].getTime()));
         LOGGER.info("got current weather for location " + latitude + "," + longitude + ": " + sample.toString());
         return sample;
     }
@@ -269,8 +269,10 @@ public class WeatherRepositoryImpl implements WeatherRepository {
         List<Time> times = new ArrayList<>();
         int index = 0;
         for (Conditions conditionsSample : conditions) {
-            times.add(new Time(forecastStartTime.plusMinutes(minutesBetweenSamples * index).format(WeatherServiceImpl.DTF),
-                               forecastStartTime.plusMinutes(minutesBetweenSamples * (index + 1)).format(WeatherServiceImpl.DTF),
+            LocalDateTime thisStartTime = forecastStartTime.plusMinutes(minutesBetweenSamples * index);
+            LocalDateTime thisEndTime =  thisStartTime.plusMinutes(minutesBetweenSamples);
+            times.add(new Time(thisStartTime.format(WeatherServiceImpl.DTF),
+                               thisEndTime.format(WeatherServiceImpl.DTF),
                                new org.belowski.weather.model.forecast.ForecastPrecipitation(convertRainNumberToMMIn3Hours(conditionsSample.getPrecipitation())),
                                new WindDirection(conditionsSample.getWindDirection()), 
                                new WindSpeed(conditionsSample.getWindSpeed()), 
@@ -279,7 +281,8 @@ public class WeatherRepositoryImpl implements WeatherRepository {
                                new Humidity(conditionsSample.getHumidity(), "%"),
                                new org.belowski.weather.model.forecast.ForecastClouds(conditionsSample.getClouds(), "%"),
                                conditionsSample.getPrecipitation(),
-                               conditionsSample.getVisibility()));
+                               conditionsSample.getVisibility(),
+                               thisEndTime.getHour() >= 6 && thisEndTime.getHour() <= 18));
             index++;
         }
         return new WeatherData(new Sun(getSunrise(forecastStartTime), getSunset(forecastStartTime)), 

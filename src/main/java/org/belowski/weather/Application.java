@@ -26,11 +26,23 @@ public class Application {
         return new RestTemplate();
     }
     
-    @Bean
-    public Marshaller jaxbMarshaller() {
+    @Bean(name = "ResponseMarshaller")
+    public Marshaller responseMarshaller() {
         Map<String, Object> props = new HashMap<>();
         props.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, false);
         props.put("jaxb.formatted.output", false);
+        props.put(javax.xml.bind.Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        Jaxb2Marshaller m = new Jaxb2Marshaller();
+        m.setMarshallerProperties(props);
+        m.setPackagesToScan("org.belowski.weather.model");
+        return m;
+    }
+    
+    @Bean(name = "DebugMarshaller")
+    public Marshaller debugMarshaller() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        props.put("jaxb.formatted.output", true);
         props.put(javax.xml.bind.Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
         Jaxb2Marshaller m = new Jaxb2Marshaller();
         m.setMarshallerProperties(props);
